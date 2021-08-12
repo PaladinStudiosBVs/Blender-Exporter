@@ -16,16 +16,11 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         
-
         row = layout.row()
         row.prop(context.scene.ExportData,'path')
 
-        ##row = layout.row()
-        ##row.prop(context.scene.ExportData,'selected_objects_only')
-
         row = layout.row()
         row.template_list("VIEW3D_UL_ExportList", "ExportItemsList", context.scene, "ExportItemsList", context.scene, "ExportItemsIndex")
-        row.enabled = not context.scene.ExportData.selected_objects_only
         
         row = layout.row()
         row.operator(op_export_items_add.Paladin_OT_AddExportItem.bl_idname)

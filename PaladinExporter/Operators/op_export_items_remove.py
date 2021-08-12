@@ -1,5 +1,4 @@
 import bpy
-import uuid
 
 class Paladin_OT_RemoveExportItem(bpy.types.Operator):
     bl_idname = "paladin.export_items_list_remove_item"

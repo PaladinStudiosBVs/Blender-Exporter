@@ -1,10 +1,5 @@
 import bpy
 
-## not used for now
-class ObjectExportSettings(bpy.types.PropertyGroup):
-    reset_origin: bpy.props.BoolProperty()
-    guid: bpy.props.StringProperty()
-
 class ExportItem(bpy.types.PropertyGroup):
     collection_name: bpy.props.StringProperty()
     reset_origin: bpy.props.BoolProperty(
@@ -17,7 +12,7 @@ class ExportItem(bpy.types.PropertyGroup):
         default=True,
     )
 
-classes = (ExportItem, ObjectExportSettings)
+classes = (ExportItem,)
 
 register, unregister = bpy.utils.register_classes_factory(classes)
 

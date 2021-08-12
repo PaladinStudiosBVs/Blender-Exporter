@@ -1,13 +1,9 @@
-
 import bpy
 
 class ExportData(bpy.types.PropertyGroup):
     path: bpy.props.StringProperty(
         name='Path',
         subtype='DIR_PATH',
-    )
-    selected_objects_only: bpy.props.BoolProperty(
-        name='Selected objects only',
     )
     active_collection_only: bpy.props.BoolProperty(
         name='Active collection only',

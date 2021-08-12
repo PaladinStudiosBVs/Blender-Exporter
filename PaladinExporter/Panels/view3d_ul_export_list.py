@@ -6,10 +6,10 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
 
         scene = context.scene
 
-        # We could write some code to decide which icon to use here...
+        # Todo: decide proper icon
         custom_icon = 'OBJECT_DATAMODE'
 
-        # Make sure your code supports all 3 layout types
+        # Todo: figure out what to do if we need to support all layout types
         if self.layout_type in {'DEFAULT', 'COMPACT'}:
             layout.label(text=item.name, icon = custom_icon)
 

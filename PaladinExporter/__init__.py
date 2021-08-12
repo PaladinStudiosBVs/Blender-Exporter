@@ -4,7 +4,7 @@ bl_info = {
     "description": "Export to Unity",
     "author": "Paladin Studios",
     "blender": (2, 93, 1),
-    "version": (0, 0, 5),
+    "version": (0, 0, 6),
     "category": "3D View",
     "location": "View3D",
     "warning": "",
@@ -34,19 +34,17 @@ from PaladinExporter.Panels import view3d_ul_export_list
 from PaladinExporter.Data import export_data
 from PaladinExporter.Data import export_item
 
-modules = (op_export_fbx, op_export_items_add, op_export_items_remove, view3d_pt_paladin_exporter, view3d_ul_export_list, export_data, export_item)
+modules = (op_export_fbx, op_export_items_add, op_export_items_remove, view3d_pt_paladin_exporter, view3d_ul_export_list, export_data, export_item,)
 
 def register():
     for module in modules:
         module.register()
 
-    bpy.types.Object.ObjectExportSettings = bpy.props.PointerProperty(type=Data.export_item.ObjectExportSettings)
     bpy.types.Scene.ExportData = bpy.props.PointerProperty(type=Data.export_data.ExportData)
     bpy.types.Scene.ExportItemsList = bpy.props.CollectionProperty(type = export_item.ExportItem) 
     bpy.types.Scene.ExportItemsIndex = bpy.props.IntProperty(name = "ExportItemsIndex", default = 0)
     
 def unregister():
-    del bpy.types.Object.ObjectExportSettings
     del bpy.types.Scene.ExportData 
     del bpy.types.Scene.ExportItemsList
     del bpy.types.Scene.ExportItemsIndex
