@@ -1,1 +1,1 @@
-xcopy /e /y /s "PaladinExporter" "C:\Users\Joep\AppData\Roaming\Blender Foundation\Blender\2.93\scripts\addons\PaladinExporter"
+xcopy /e /y /s "PaladinExporter" "%AppData%\Blender Foundation\Blender\2.93\scripts\addons\PaladinExporter"
