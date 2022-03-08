@@ -32,6 +32,15 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
                 return
 
             row.label(text=item.collection_name)
+
+            row.prop(item, 'use_custom_path')
+           
+            split = row.split()
+            split.enabled = False
+            if item.use_custom_path:
+                split.enabled = True
+            split.prop(item, 'custom_path')
+
             row.prop(item, 'reset_origin')
             row.prop(item, 'include_in_export')
             
