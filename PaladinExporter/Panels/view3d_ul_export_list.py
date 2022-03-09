@@ -7,7 +7,7 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
         scene = context.scene
 
         # Todo: decide proper icon
-        custom_icon = 'OBJECT_DATAMODE'
+        custom_icon = 'OUTLINER_COLLECTION'
 
         # Todo: figure out what to do if we need to support all layout types
         if self.layout_type in {'DEFAULT', 'COMPACT'}:
@@ -19,7 +19,12 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
 
         if index >= 0 and scene.ExportItemsList:
             item = scene.ExportItemsList[index]
+
             row = layout.row()
+            row.prop(item, 'include_in_export')
+
+            row = layout.row()
+            row.enabled = item.include_in_export
 
             collection_found = False
             for collection in bpy.data.collections:
@@ -32,18 +37,13 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
                 return
 
             row.label(text=item.collection_name)
-
             row.prop(item, 'use_custom_path')
            
             split = row.split()
-            split.enabled = False
-            if item.use_custom_path:
-                split.enabled = True
+            split.enabled = item.use_custom_path
             split.prop(item, 'custom_path')
 
             row.prop(item, 'reset_origin')
-            row.prop(item, 'include_in_export')
-            
 
 
 classes = (VIEW3D_UL_ExportList,)
