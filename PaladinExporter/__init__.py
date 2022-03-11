@@ -4,7 +4,7 @@ bl_info = {
     "description": "Export to Unity",
     "author": "Paladin Studios",
     "blender": (2, 93, 1),
-    "version": (0, 0, 7),
+    "version": (0, 0, 8),
     "category": "3D View",
     "location": "View3D",
     "warning": "",
