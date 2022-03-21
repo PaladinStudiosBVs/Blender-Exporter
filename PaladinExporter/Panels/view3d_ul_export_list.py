@@ -34,17 +34,20 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
                 row.label(text="Missing: " + item.collection_name)
                 return
 
-            row.enabled = item.include_in_export
             row.prop(item, 'include_in_export')
 
-            row.label(text=item.collection_name)
-            row.prop(item, 'use_custom_path')
-           
-            split = row.split()
-            split.enabled = item.use_custom_path
-            split.prop(item, 'custom_path')
+            itemCell = row.split()
 
-            row.prop(item, 'reset_origin')
+            itemCell.enabled = item.include_in_export
+
+            itemCell.label(text=item.collection_name)
+            itemCell.prop(item, 'use_custom_path')
+           
+            pathCell = itemCell.split()
+            pathCell.enabled = item.use_custom_path
+            pathCell.prop(item, 'custom_path')
+
+            itemCell.prop(item, 'reset_origin')
 
 
 classes = (VIEW3D_UL_ExportList,)
