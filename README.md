@@ -31,6 +31,8 @@ Now the addon scripts should be in Blender and the add-on can be enabled in the 
 
 Click the checkbox to enable the add on.
 
+<b> Note: </b> When the addon has been enabled once, this step can be skipped. Reloading scripts is only required.
+
 The addon is now available in the main viewport on the 'N' panel. If it isn't visible, press `N` to reveal the panel and click on `Paladin Studios`. 
 
 <a name="release"/>
