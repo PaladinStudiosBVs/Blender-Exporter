@@ -43,3 +43,5 @@ Checkout the repository and switch to the branch you need a release from.
 Zip the `PaladinExporter` folder to a `PaladinExporterVx.x.x.zip`, where x.x.x should be the relevant version number.
 
 The zip file can now be distributed and installed using the add on preferences menu, by clicking `Install` and selecting the .zip file.
+
+<b> Note: </b> Releases can be found and should be stored here: https://drive.google.com/drive/folders/1-_meO1-zW8H6PL4mfkoIDylMxyL2_XvZ
