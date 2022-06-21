@@ -28,6 +28,10 @@ When exporting to multiple folders is required, a collection per export path can
 
 The `Reset Origin` bool will export every object within a collection at the world origin (0,0,0).
 
+When exporting a rig without animation, the `Include Meshes` should be set to true and the `Bake Animation` set to false.
+
+When exporting animations only, the `Include Meshes` should be set to false and the `Bake Animation` set to true. A filename suffix will be added as well.
+
 <a name="requirements"/>
 
 # Requirements
