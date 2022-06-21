@@ -26,6 +26,8 @@ Added collections will be exported on an per object bases within the collection.
 
 When exporting to multiple folders is required, a collection per export path can be added (having a custom path defined).
 
+The `Reset Origin` bool will export every object within a collection at the world origin (0,0,0).
+
 <a name="requirements"/>
 
 # Requirements
