@@ -53,8 +53,12 @@ class Paladin_OT_ExportItemAdd(bpy.types.Operator):
 
     def execute(self, context):
         collection = context.collection
+        items = context.scene.ExportItemsList
+
         item = context.scene.ExportItemsList.add()
         item.collection_name = collection.name
+        
+        context.scene.ExportItemsIndex = len(items)-1
         return{'FINISHED'}
 
 class Paladin_OT_ExportItemMove(bpy.types.Operator):
