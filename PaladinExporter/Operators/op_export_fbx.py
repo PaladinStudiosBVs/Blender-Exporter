@@ -6,10 +6,21 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        if bpy.context.object.mode != "OBJECT":
+        if context.object.mode != "OBJECT":
             return False
-        
+        if getattr(context.scene.ExportData,'path') == "":
+            return False
+        if len(context.scene.ExportItemsList) == 0:
+            return False
         return True
+
+    @classmethod
+    def description(cls, context, event):
+        if getattr(context.scene.ExportData,'path') == "":
+            return "Choose an export path first"
+        if len(context.scene.ExportItemsList) == 0:
+            return "Add Collections to the export list first"
+        return "Export all 'Enabled' export collections in the export list"
 
     def execute(self, context):
         exportItems = context.scene.ExportItemsList.values()

@@ -5,7 +5,6 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
                   active_propname, index):
 
         scene = context.scene
-        custom_icon = 'OUTLINER_COLLECTION'
 
         if index >= 0 and scene.ExportItemsList:
             item = scene.ExportItemsList[index]
@@ -16,39 +15,28 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
                     collection_found = True
                     break
 
-            if not collection_found:
-                custom_icon = 'ERROR'
-
-            # Todo: figure out what to do if we need to support all layout types
-            if self.layout_type in {'DEFAULT', 'COMPACT'}:
-                layout.label(text=item.name, icon = custom_icon)
-
-            elif self.layout_type in {'GRID'}:
-                layout.alignment = 'CENTER'
-                layout.label(text="", icon = custom_icon)                    
-            
-            row = layout.row()
+            #layout.alignment = 'LEFT'
+            row = layout.row(align=True)
+            #row.scale_y = 1.2
 
             if not collection_found:
                 row.enabled = False
-                row.label(text="Missing: " + item.collection_name)
+                row.label(text=f"Missing: '{item.collection_name}'", icon='ERROR')
                 return
 
-            row.prop(item, 'include_in_export')
+            row.prop(item, 'include_in_export', icon_only=True, icon='EXPORT')
+            row.prop(item, 'use_custom_path', icon_only=True, icon='FILEBROWSER')
+            row.prop(item, 'reset_origin', icon_only=True, icon='ORIENTATION_GLOBAL')
+            
+            row.separator()
 
-            itemCell = row.split()
-
-            itemCell.enabled = item.include_in_export
-
-            itemCell.label(text=item.collection_name)
-            itemCell.prop(item, 'use_custom_path')
-           
-            pathCell = itemCell.split()
-            pathCell.enabled = item.use_custom_path
-            pathCell.prop(item, 'custom_path')
-
-            itemCell.prop(item, 'reset_origin')
-
+            coll_cell = row.split(factor=0.4)
+            coll_cell.enabled = item.include_in_export
+            coll_cell.label(text=item.collection_name)
+            
+            path_cell = coll_cell.split()
+            path_cell.enabled = item.use_custom_path
+            path_cell.prop(item, 'custom_path', text="")
 
 classes = (VIEW3D_UL_ExportList,)
 

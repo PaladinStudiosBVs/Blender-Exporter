@@ -4,7 +4,7 @@ bl_info = {
     "description": "Export to Unity",
     "author": "Paladin Studios",
     "blender": (2, 93, 1),
-    "version": (0, 0, 9),
+    "version": (0, 1, 0),
     "category": "3D View",
     "location": "View3D",
     "warning": "",
@@ -17,8 +17,7 @@ if "bpy" in locals():
     # This will ensure everything is reloaded if already loaded once before.
     import imp
     imp.reload(op_export_fbx)
-    imp.reload(op_export_items_add)
-    imp.reload(op_export_items_remove)
+    imp.reload(op_export_items)
     imp.reload(view3d_pt_paladin_exporter)
     imp.reload(view3d_ul_export_list)
     imp.reload(export_data)
@@ -27,14 +26,13 @@ if "bpy" in locals():
 
 import bpy
 from PaladinExporter.Operators import op_export_fbx
-from PaladinExporter.Operators import op_export_items_add
-from PaladinExporter.Operators import op_export_items_remove
+from PaladinExporter.Operators import op_export_items
 from PaladinExporter.Panels import view3d_pt_paladin_exporter
 from PaladinExporter.Panels import view3d_ul_export_list
 from PaladinExporter.Data import export_data
 from PaladinExporter.Data import export_item
 
-modules = (op_export_fbx, op_export_items_add, op_export_items_remove, view3d_pt_paladin_exporter, view3d_ul_export_list, export_data, export_item,)
+modules = (op_export_fbx, op_export_items, view3d_pt_paladin_exporter, view3d_ul_export_list, export_data, export_item,)
 
 def register():
     for module in modules:

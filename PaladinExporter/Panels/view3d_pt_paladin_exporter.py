@@ -1,8 +1,7 @@
 import bpy
 
 from ..Operators import op_export_fbx
-from ..Operators import op_export_items_add
-from ..Operators import op_export_items_remove
+from ..Operators import op_export_items
 from ..Data import export_data
 from . import view3d_ul_export_list
 
@@ -12,6 +11,7 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Paladin Studios"
+    bl_order = 0
 
     def draw(self, context):
         layout = self.layout
@@ -22,15 +22,22 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         row = layout.row()
         row.template_list("VIEW3D_UL_ExportList", "ExportItemsList", context.scene, "ExportItemsList", context.scene, "ExportItemsIndex")
         
-        row = layout.row()
-        row.operator(op_export_items_add.Paladin_OT_AddExportItem.bl_idname)
-        row.operator(op_export_items_remove.Paladin_OT_RemoveExportItem.bl_idname)
+        col = row.column(align=True)
+        col.operator(op_export_items.Paladin_OT_ExportItemAdd.bl_idname, icon='ADD', text="")
+        col.operator(op_export_items.Paladin_OT_ExportItemRemove.bl_idname, icon='REMOVE', text="")
+
+        col.separator()
+
+        if len(context.scene.ExportItemsList) >= 2:
+            col.operator(op_export_items.Paladin_OT_ExportItemMove.bl_idname, text="", icon="TRIA_UP").direction = "UP"
+            col.operator(op_export_items.Paladin_OT_ExportItemMove.bl_idname, text="", icon="TRIA_DOWN").direction = "DOWN"
 
         row = layout.row()
         row.prop(context.scene.ExportData, 'include_meshes')
         row.prop(context.scene.ExportData, 'bake_animation')
 
         layout.use_property_split = True
+        layout.use_property_decorate = False
 
         if context.scene.ExportData.bake_animation:
             row = layout.row()
@@ -41,7 +48,7 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
             row.prop(context.scene.ExportData, 'filename_suffix')
         
         row = layout.row()
-        row.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname)
+        row.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Export', icon='EXPORT')
     
 classes = (VIEW3D_PT_Paladin_Exporter,)
 
