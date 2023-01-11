@@ -99,7 +99,7 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                     ## animation
                     bake_anim=context.scene.ExportData.bake_animation,
                     bake_anim_use_all_bones=True,
-                    bake_anim_use_nla_strips=True,
+                    bake_anim_use_nla_strips=False,
                     bake_anim_use_all_actions=True,
                     bake_anim_force_startend_keying=True,
                     bake_anim_step=context.scene.ExportData.bake_anim_step,
