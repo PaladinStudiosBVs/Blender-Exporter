@@ -1,7 +1,7 @@
 # Addon info
 bl_info = {
-    "name": "Paladin Exporter",
-    "description": "Export to Unity",
+    "name": "Eazy Export",
+    "description": "Export multiple assets",
     "author": "Paladin Studios",
     "blender": (2, 93, 1),
     "version": (0, 1, 2),
@@ -30,20 +30,17 @@ from .ui import panels
 from .ui import lists
 from .data import properties
 
+
 modules = (op_export_fbx, op_export_items, panels, lists, properties)
 
 def register():
     for module in modules:
         module.register()
 
-    bpy.types.Scene.ExportData = bpy.props.PointerProperty(type=data.properties.ExportData)
-    bpy.types.Scene.ExportItemsList = bpy.props.CollectionProperty(type = properties.ExportItem)
-    bpy.types.Scene.ExportItemsIndex = bpy.props.IntProperty(name = "ExportItemsIndex", default = 0)
-    
+    bpy.types.Scene.exporter = bpy.props.PointerProperty(type=data.properties.ExporterSceneProperties)
+
 def unregister():
-    del bpy.types.Scene.ExportData
-    del bpy.types.Scene.ExportItemsList
-    del bpy.types.Scene.ExportItemsIndex
+    del bpy.types.Scene.exporter
 
     for module in modules:
         module.unregister()
