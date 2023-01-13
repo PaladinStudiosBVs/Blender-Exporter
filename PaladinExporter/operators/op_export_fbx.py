@@ -68,10 +68,9 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                 else:
                     types_to_export = {'ARMATURE','EMPTY'}
 
-
-                export_path = export_data.path + filename
-                if not item_value.custom_path == "":
-                    export_path = item_value.custom_path + filename
+                export_path = item_value.custom_path + filename
+                if not item_value.use_custom_path or item_value.custom_path == "":
+                    export_path = export_data.path + filename
 
                 bpy.ops.export_scene.fbx(
                     filepath=bpy.path.abspath(export_path),

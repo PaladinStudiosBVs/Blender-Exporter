@@ -4,7 +4,7 @@ bl_info = {
     "description": "Export multiple assets",
     "author": "Paladin Studios",
     "blender": (2, 93, 1),
-    "version": (0, 1, 2),
+    "version": (0, 1, 3),
     "category": "3D View",
     "location": "View3D",
     "warning": "",
@@ -21,17 +21,19 @@ if "bpy" in locals():
     imp.reload(panels)
     imp.reload(lists)
     imp.reload(properties)
+    imp.reload(icons)
     print("Reloading")
 
 import bpy
 from .operators import op_export_fbx
 from .operators import op_export_items
+from .utilities import icons
 from .ui import panels
 from .ui import lists
 from .data import properties
 
 
-modules = (op_export_fbx, op_export_items, panels, lists, properties)
+modules = (op_export_fbx, op_export_items, panels, lists, properties, icons)
 
 def register():
     for module in modules:

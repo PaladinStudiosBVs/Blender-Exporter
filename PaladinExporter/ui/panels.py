@@ -1,7 +1,7 @@
 import bpy
 
-from ..operators import op_export_fbx
-from ..operators import op_export_items
+from ..operators import op_export_fbx, op_export_items
+from ..utilities.icons import get_icon
 
 class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
     bl_idname = "VIEW3D_PT_Paladin_Exporter_Panel"
@@ -14,6 +14,7 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
     def draw(self, context):
         export_data = context.scene.exporter
         items = export_data.items_list
+        export_icon = get_icon('icon_export')
         
         layout = self.layout
         layout.use_property_split = True
@@ -51,8 +52,8 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
             row.prop(export_data, 'filename_suffix')
         
         row = layout.row()
-        row.scale_y = 1.5
-        row.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Export', icon='EXPORT')
+        row.scale_y = 1.25
+        row.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Export', icon_value=export_icon)
     
 classes = (VIEW3D_PT_Paladin_Exporter,)
 
