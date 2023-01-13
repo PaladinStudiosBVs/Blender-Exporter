@@ -49,10 +49,12 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
                 col_cell.label(text=item.collection_name)
 
             if item.use_custom_path:
-                row.prop(item, 'use_custom_path', icon_only=True, icon='PANEL_CLOSE', emboss=False)  
+                row.prop(item, 'use_custom_path', icon_only=True, icon='PANEL_CLOSE', emboss=False) 
+                col = row.column()
+                col.prop(item, 'use_object_origin', icon_only=True, icon='OBJECT_ORIGIN') 
             else: 
                 row.prop(item, 'use_custom_path', icon_only=True, icon_value=custom_path)  
-            row.prop(item, 'use_object_origin', icon_only=True, icon='OBJECT_ORIGIN')
+                row.prop(item, 'use_object_origin', icon_only=True, icon='OBJECT_ORIGIN')
 
             
 
