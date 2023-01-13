@@ -1,10 +1,10 @@
 # Addon info
 bl_info = {
-    "name": "Eazy Export",
+    "name": "Paladin Exporter",
     "description": "Export multiple assets",
-    "author": "Paladin Studios",
-    "blender": (2, 93, 1),
-    "version": (0, 1, 3),
+    "author": "Joep Peeters, Laurens 't Jong",
+    "blender": (3, 4, 0),
+    "version": (0, 1, 4),
     "category": "3D View",
     "location": "View3D",
     "warning": "",
@@ -25,11 +25,9 @@ if "bpy" in locals():
     print("Reloading")
 
 import bpy
-from .operators import op_export_fbx
-from .operators import op_export_items
+from .operators import op_export_fbx, op_export_items
 from .utilities import icons
-from .ui import panels
-from .ui import lists
+from .ui import panels, lists
 from .data import properties
 
 

@@ -7,12 +7,17 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
         
         export_data = context.scene.exporter
         include = item.include_in_export
-        arrow_right = get_icon('arrow_right')
-        arrow_left = get_icon('arrow_left')
+        custom_path = get_icon('custom_path')
+
+        #arrow_left = get_icon('arrow_left')
         
         if index >= 0 and export_data.items_list:
             
             item = export_data.items_list[index]
+
+            #failsafe to keep export settings like they were
+            #if item.reset_origin:
+                #item.use_object_origin = False
 
             collection_found = False
             for collection in bpy.data.collections:
@@ -43,8 +48,11 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
                 col_cell.enabled = include
                 col_cell.label(text=item.collection_name)
 
-            row.prop(item, 'use_custom_path', icon_only=True, icon_value=arrow_right if not item.use_custom_path else arrow_left, emboss=False)
-            row.prop(item, 'reset_origin', icon_only=True, icon='ORIENTATION_GLOBAL')
+            if item.use_custom_path:
+                row.prop(item, 'use_custom_path', icon_only=True, icon='PANEL_CLOSE', emboss=False)  
+            else: 
+                row.prop(item, 'use_custom_path', icon_only=True, icon_value=custom_path)  
+            row.prop(item, 'use_object_origin', icon_only=True, icon='OBJECT_ORIGIN')
 
             
 

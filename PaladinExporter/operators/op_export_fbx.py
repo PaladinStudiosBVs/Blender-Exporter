@@ -59,7 +59,7 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
 
                 old_location = obj.location.copy()
 
-                if item_value.reset_origin:
+                if not item_value.use_object_origin:
                     obj.location = (0,0,0)
 
                 types_to_export = {}
