@@ -131,9 +131,13 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
         # Reporting number of exported objects:
         length = len(exported_objects)
         if length == 0:
-            self.report({'WARNING'},"No Objects were exported")
+            self.report({'ERROR'},"No objects in exported collections!"
+
+
+
+)
         elif length == 1:
-            self.report({'INFO'},"1 Object was exported")
+            self.report({'INFO'},"1 object was exported")
         else:
             self.report({'INFO'},f"{length} objects were exported")
 
