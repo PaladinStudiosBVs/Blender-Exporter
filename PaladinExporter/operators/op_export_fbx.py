@@ -14,10 +14,10 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
             return False
         if len(items) == 0:
             return False
-        for item_value in items_values:
-            if not item_value.include_in_export:
-                return False
-        return True
+        for value in items_values:
+            if value.include_in_export:
+                return True
+        return False
 
     @classmethod
     def description(cls, context, event):
@@ -29,10 +29,10 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
             return "Choose a 'Global Path' first"
         if len(items) == 0:
             return "Add Collections to the export list first"
-        for item_value in items_values:
-            if not item_value.include_in_export:
-                return "Enable at least one export collection"
-        return "Export all 'Included' collections from the export list"
+        for value in items_values:
+            if value.include_in_export:
+                return "Export all 'Enabled' collections from the export list"
+        return "Enable at least one export collection"
 
     def execute(self, context):
         export_data = context.scene.exporter
