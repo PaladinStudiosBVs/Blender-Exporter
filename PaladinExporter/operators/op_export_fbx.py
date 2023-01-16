@@ -6,12 +6,12 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        scene_data = context.scene.exporter
-        if context.object.mode != "OBJECT":
+        export_data = context.scene.exporter
+        items = export_data.items_list
+
+        if getattr(export_data,'path') == "":
             return False
-        if getattr(scene_data,'path') == "":
-            return False
-        if len(scene_data.items_list) == 0:
+        if len(items) == 0:
             return False
         return True
 
@@ -29,7 +29,15 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
     def execute(self, context):
         export_data = context.scene.exporter
         items_values = export_data.items_list.values()
+        
+        old_selected = context.selected_objects
+        old_active = context.view_layer.objects.active
+        old_mode = context.object.mode
+        
+        exported_objects = []
 
+        bpy.ops.object.mode_set(mode='OBJECT')
+        
         for item_value in items_values:
             if item_value.include_in_export == False:
                 continue
@@ -39,7 +47,7 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                 continue
             
             parent_objects = []
-
+            
             ## Find all top level objects in collection
             for obj in collection.objects:
                 if obj.parent == None and obj.type in ('MESH','EMPTY','ARMATURE'):
@@ -51,11 +59,14 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                 context.view_layer.objects.active = obj
                 bpy.ops.object.select_grouped(extend=True, type='CHILDREN_RECURSIVE')
                 filename = obj.name
+                
 
                 if export_data.bake_animation:
                     filename += export_data.filename_suffix
 
                 filename += ".fbx"
+                
+                exported_objects.append(filename)
 
                 old_location = obj.location.copy()
 
@@ -106,8 +117,24 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                     bake_anim_step=export_data.bake_anim_step,
                     bake_anim_simplify_factor=export_data.bake_anim_simplify_factor
                     )
-                
+                    
                 obj.location = old_location
+                
+        # Reporting number of exported objects:
+        length = len(exported_objects)
+        if length == 0:
+            self.report({'WARNING'},"No Objects were exported")
+        elif length == 1:
+            self.report({'INFO'},"1 Object was exported")
+        else:
+            self.report({'INFO'},f"{length} objects were exported")
+
+        # Resetting selected/active objects and mode:
+        bpy.ops.object.select_all(action='DESELECT')
+        for obj in old_selected:
+            obj.select_set(True)
+        context.view_layer.objects.active = old_active
+        bpy.ops.object.mode_set(mode=old_mode)
                 
         return {'FINISHED'}
 
