@@ -51,9 +51,14 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
             row = layout.row()
             row.prop(export_data, 'filename_suffix')
         
-        row = layout.row()
+        row = layout.row(align=True)
         row.scale_y = 1.25
         row.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Export', icon_value=export_icon)
+        
+        #export_sel = split.column()
+        #row.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Selected', icon_value=export_icon)
+    
+        
     
 classes = (VIEW3D_PT_Paladin_Exporter,)
 
