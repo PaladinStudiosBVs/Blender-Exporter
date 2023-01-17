@@ -8,8 +8,6 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
         export_data = context.scene.exporter
         include = item.include_in_export
         custom_path = get_icon('custom_path')
-
-        #arrow_left = get_icon('arrow_left')
         
         if index >= 0 and export_data.items_list:
             
@@ -49,12 +47,14 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
                 col_cell.label(text=item.collection_name)
 
             if item.use_custom_path:
-                row.prop(item, 'use_custom_path', icon_only=True, icon='PANEL_CLOSE', emboss=False) 
+                row.prop(item, 'use_custom_path', icon_only=True, icon='PANEL_CLOSE', emboss=False)
                 col = row.column()
-                col.prop(item, 'use_object_origin', icon_only=True, icon='OBJECT_ORIGIN') 
+                col.prop(item, 'use_object_origin', icon_only=True, icon='OBJECT_ORIGIN')
             else: 
-                row.prop(item, 'use_custom_path', icon_only=True, icon_value=custom_path)  
+                row.prop(item, 'use_custom_path', icon_only=True, icon_value=custom_path)
                 row.prop(item, 'use_object_origin', icon_only=True, icon='OBJECT_ORIGIN')
+
+            
 
             
 
