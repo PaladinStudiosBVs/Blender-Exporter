@@ -1,9 +1,7 @@
 import bpy
 
-from ..Operators import op_export_fbx
-from ..Operators import op_export_items
-from ..Data import export_data
-from . import view3d_ul_export_list
+from ..operators import op_export_fbx, op_export_items
+from ..utilities.icons import get_icon
 
 class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
     bl_idname = "VIEW3D_PT_Paladin_Exporter_Panel"
@@ -14,13 +12,20 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
     bl_order = 0
 
     def draw(self, context):
-        layout = self.layout
+        export_data = context.scene.exporter
+        items = export_data.items_list
+        export_icon = get_icon('icon_export')
         
-        row = layout.row()
-        row.prop(context.scene.ExportData,'path')
+        layout = self.layout
+        layout.use_property_split = True
+        layout.use_property_decorate = False
+        
+        row = layout.row(align=True)
+        row.prop(export_data,'path', text='Global Path')
 
+        layout.use_property_split = False
         row = layout.row()
-        row.template_list("VIEW3D_UL_ExportList", "ExportItemsList", context.scene, "ExportItemsList", context.scene, "ExportItemsIndex")
+        row.template_list("VIEW3D_UL_ExportList", "items_list", export_data, "items_list", export_data, "items_index")
         
         col = row.column(align=True)
         col.operator(op_export_items.Paladin_OT_ExportItemAdd.bl_idname, icon='ADD', text="")
@@ -28,27 +33,27 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
 
         col.separator()
 
-        if len(context.scene.ExportItemsList) >= 2:
+        if len(items) >= 2:
             col.operator(op_export_items.Paladin_OT_ExportItemMove.bl_idname, text="", icon="TRIA_UP").direction = "UP"
             col.operator(op_export_items.Paladin_OT_ExportItemMove.bl_idname, text="", icon="TRIA_DOWN").direction = "DOWN"
 
         row = layout.row()
-        row.prop(context.scene.ExportData, 'include_meshes')
-        row.prop(context.scene.ExportData, 'bake_animation')
+        row.prop(export_data, 'include_meshes')
+        row.prop(export_data, 'bake_animation')
 
         layout.use_property_split = True
-        layout.use_property_decorate = False
 
-        if context.scene.ExportData.bake_animation:
+        if export_data.bake_animation:
             row = layout.row()
-            row.prop(context.scene.ExportData, 'bake_anim_step')
+            row.prop(export_data, 'bake_anim_step')
             row = layout.row()
-            row.prop(context.scene.ExportData, 'bake_anim_simplify_factor')
+            row.prop(export_data, 'bake_anim_simplify_factor')
             row = layout.row()
-            row.prop(context.scene.ExportData, 'filename_suffix')
+            row.prop(export_data, 'filename_suffix')
         
         row = layout.row()
-        row.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Export', icon='EXPORT')
+        row.scale_y = 1.25
+        row.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Export', icon_value=export_icon)
     
 classes = (VIEW3D_PT_Paladin_Exporter,)
 

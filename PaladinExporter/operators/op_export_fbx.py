@@ -6,70 +6,71 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
+        scene_data = context.scene.exporter
         if context.object.mode != "OBJECT":
             return False
-        if getattr(context.scene.ExportData,'path') == "":
+        if getattr(scene_data,'path') == "":
             return False
-        if len(context.scene.ExportItemsList) == 0:
+        if len(scene_data.items_list) == 0:
             return False
         return True
 
     @classmethod
     def description(cls, context, event):
-        if getattr(context.scene.ExportData,'path') == "":
-            return "Choose an export path first"
-        if len(context.scene.ExportItemsList) == 0:
+        export_data = context.scene.exporter
+        items = export_data.items_list
+
+        if getattr(export_data,'path') == "":
+            return "Choose a 'Global Path' first"
+        if len(items) == 0:
             return "Add Collections to the export list first"
-        return "Export all 'Enabled' export collections in the export list"
+        return "Export all 'Included' collections from the export list"
 
     def execute(self, context):
-        exportItems = context.scene.ExportItemsList.values()
+        export_data = context.scene.exporter
+        items_values = export_data.items_list.values()
 
-        for exportItem in exportItems:
-
-            if exportItem.include_in_export == False:
+        for item_value in items_values:
+            if item_value.include_in_export == False:
                 continue
-
-            collection = bpy.data.collections[exportItem.collection_name]
-            
+            collection = bpy.data.collections[item_value.collection_name]
             if collection is None:
-                print("collection not found! " + exportItem.collection_name)
+                print("collection not found! " + item_value.collection_name)
                 continue
             
             parent_objects = []
 
             ## Find all top level objects in collection
-            for ob in collection.objects:
-                if ob.parent == None and ob.type in ('MESH','EMPTY','ARMATURE'):
-                    parent_objects.append(ob)
+            for obj in collection.objects:
+                if obj.parent == None and obj.type in ('MESH','EMPTY','ARMATURE'):
+                    parent_objects.append(obj)
                 
-            for ob in parent_objects:
+            for obj in parent_objects:
                 bpy.ops.object.select_all(action='DESELECT')
-                ob.select_set(True)
-                context.view_layer.objects.active = ob
+                obj.select_set(True)
+                context.view_layer.objects.active = obj
                 bpy.ops.object.select_grouped(extend=True, type='CHILDREN_RECURSIVE')
-                filename = ob.name
+                filename = obj.name
 
-                if context.scene.ExportData.bake_animation:
-                    filename += context.scene.ExportData.filename_suffix
+                if export_data.bake_animation:
+                    filename += export_data.filename_suffix
 
                 filename += ".fbx"
 
-                old_location = ob.location.copy()
+                old_location = obj.location.copy()
 
-                if exportItem.reset_origin:
-                    ob.location = (0,0,0)
+                if not item_value.use_object_origin:
+                    obj.location = (0,0,0)
 
                 types_to_export = {}
-                if context.scene.ExportData.include_meshes:
+                if export_data.include_meshes:
                     types_to_export = {'ARMATURE','MESH','EMPTY'}
                 else:
                     types_to_export = {'ARMATURE','EMPTY'}
 
-
-                export_path = context.scene.ExportData.path + filename
-                if exportItem.use_custom_path:
-                    export_path = exportItem.custom_path + filename
+                export_path = item_value.custom_path + filename
+                if not item_value.use_custom_path or item_value.custom_path == "":
+                    export_path = export_data.path + filename
 
                 bpy.ops.export_scene.fbx(
                     filepath=bpy.path.abspath(export_path),
@@ -97,16 +98,16 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                     add_leaf_bones=False,
 
                     ## animation
-                    bake_anim=context.scene.ExportData.bake_animation,
+                    bake_anim=export_data.bake_animation,
                     bake_anim_use_all_bones=True,
                     bake_anim_use_nla_strips=False,
                     bake_anim_use_all_actions=True,
                     bake_anim_force_startend_keying=True,
-                    bake_anim_step=context.scene.ExportData.bake_anim_step,
-                    bake_anim_simplify_factor=context.scene.ExportData.bake_anim_simplify_factor
+                    bake_anim_step=export_data.bake_anim_step,
+                    bake_anim_simplify_factor=export_data.bake_anim_simplify_factor
                     )
                 
-                ob.location = old_location
+                obj.location = old_location
                 
         return {'FINISHED'}
 
