@@ -36,20 +36,6 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         if len(items) >= 2:
             col.operator(op_export_items.Paladin_OT_ExportItemMove.bl_idname, text="", icon="TRIA_UP").direction = "UP"
             col.operator(op_export_items.Paladin_OT_ExportItemMove.bl_idname, text="", icon="TRIA_DOWN").direction = "DOWN"
-
-        row = layout.row()
-        row.prop(export_data, 'include_meshes')
-        row.prop(export_data, 'bake_animation')
-
-        layout.use_property_split = True
-
-        if export_data.bake_animation:
-            row = layout.row()
-            row.prop(export_data, 'bake_anim_step')
-            row = layout.row()
-            row.prop(export_data, 'bake_anim_simplify_factor')
-            row = layout.row()
-            row.prop(export_data, 'filename_suffix')
         
         row = layout.row(align=True)
         row.scale_y = 1.25

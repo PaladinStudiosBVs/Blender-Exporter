@@ -34,6 +34,8 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                 return "Export all 'Enabled' collections from the export list"
         return "Enable at least one export collection"
 
+    
+
     def execute(self, context):
         export_data = context.scene.exporter
         items_values = export_data.items_list.values()
@@ -68,9 +70,8 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                 bpy.ops.object.select_grouped(extend=True, type='CHILDREN_RECURSIVE')
                 filename = obj.name
                 
-
-                if export_data.bake_animation:
-                    filename += export_data.filename_suffix
+                #if export_data.bake_animation:
+                #    filename += export_data.filename_suffix
 
                 filename += ".fbx"
                 
@@ -81,49 +82,56 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                 if not item_value.use_object_origin:
                     obj.location = (0,0,0)
 
-                types_to_export = {}
-                if export_data.include_meshes:
-                    types_to_export = {'ARMATURE','MESH','EMPTY'}
-                else:
-                    types_to_export = {'ARMATURE','EMPTY'}
-
                 export_path = item_value.custom_path + filename
                 if not item_value.use_custom_path or item_value.custom_path == "":
                     export_path = export_data.path + filename
 
                 bpy.ops.export_scene.fbx(
                     filepath=bpy.path.abspath(export_path),
+                    batch_mode='OFF',
+                    check_existing=False,
+                
+                # Include
                     use_selection=True,
-
+                    use_visible=False,
+                    use_active_collection=False,
+                    object_types={'ARMATURE','MESH','EMPTY'},
+                    use_custom_props=False,
+                
+                # Transform
+                    global_scale=1.00,
+                    apply_scale_options='FBX_SCALE_ALL',
                     axis_forward='Y',
                     axis_up = 'Z',
-
-                    object_types=types_to_export,
-                    apply_scale_options='FBX_SCALE_ALL',
-                    global_scale=1.00,
                     apply_unit_scale=True,
-
-                    use_mesh_modifiers=True,
-                    mesh_smooth_type='FACE',
-                    batch_mode='OFF',
-                    use_custom_props=False,
-
+                    use_space_transform=False,
                     bake_space_transform=False,
 
-                    ## armature
+                # Geometry
+                    mesh_smooth_type='FACE',
+                    use_subsurf=True,
+                    use_mesh_modifiers=True,
+                    use_mesh_edges=False,
+                    use_triangles=True,
+                    use_tspace=False,
+                    colors_type='SRGB',
+                    
+                # Armature
                     primary_bone_axis='Y',
                     secondary_bone_axis='X',
+                    armature_nodetype='NULL',
                     use_armature_deform_only=True,
                     add_leaf_bones=False,
 
-                    ## animation
-                    bake_anim=export_data.bake_animation,
+                # Animation
+                    bake_anim=False,
+
                     bake_anim_use_all_bones=True,
                     bake_anim_use_nla_strips=False,
                     bake_anim_use_all_actions=True,
                     bake_anim_force_startend_keying=True,
-                    bake_anim_step=export_data.bake_anim_step,
-                    bake_anim_simplify_factor=export_data.bake_anim_simplify_factor
+                    bake_anim_step=1.0,
+                    bake_anim_simplify_factor=0.05
                     )
                     
                 obj.location = old_location
@@ -131,11 +139,7 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
         # Reporting number of exported objects:
         length = len(exported_objects)
         if length == 0:
-            self.report({'ERROR'},"No objects in exported collections!"
-
-
-
-)
+            self.report({'ERROR'},"No objects in exported collections!")
         elif length == 1:
             self.report({'INFO'},"1 object was exported")
         else:
