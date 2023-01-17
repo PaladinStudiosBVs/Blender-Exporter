@@ -1,4 +1,6 @@
 import bpy
+import os
+import json
 
 class Paladin_OT_ExportFbx(bpy.types.Operator):
     bl_idname = "paladin.exportfbx"
@@ -34,17 +36,22 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                 return "Export all 'Enabled' collections from the export list"
         return "Enable at least one export collection"
 
-    
-
     def execute(self, context):
         export_data = context.scene.exporter
         items_values = export_data.items_list.values()
-        
         old_selected = context.selected_objects
         old_active = context.view_layer.objects.active
         old_mode = context.object.mode
-        
         exported_objects = []
+
+        settings_folder = 'presets'
+        settings_file = 'fbx_unity_object.json'
+        settings_path = os.path.join(os.path.dirname(__file__), settings_folder, settings_file)
+
+        with open(settings_path, 'r') as settings_file:
+            self.settings = json.load(settings_file)
+
+        print(self.settings["object_types"])
 
         bpy.ops.object.mode_set(mode='OBJECT')
         
@@ -76,7 +83,6 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                 filename += ".fbx"
                 
                 exported_objects.append(filename)
-
                 old_location = obj.location.copy()
 
                 if not item_value.use_object_origin:
@@ -88,50 +94,44 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
 
                 bpy.ops.export_scene.fbx(
                     filepath=bpy.path.abspath(export_path),
-                    batch_mode='OFF',
-                    check_existing=False,
-                
+                    batch_mode=(self.settings["batch_mode"]),
+                    check_existing=(self.settings["check_existing"]),
                 # Include
                     use_selection=True,
-                    use_visible=False,
-                    use_active_collection=False,
-                    object_types={'ARMATURE','MESH','EMPTY'},
-                    use_custom_props=False,
-                
+                    use_visible=(self.settings["use_visible"]),
+                    use_active_collection=(self.settings["use_active_collection"]),
+                    object_types=set(self.settings["object_types"]),
+                    use_custom_props=(self.settings["use_custom_props"]),
                 # Transform
-                    global_scale=1.00,
-                    apply_scale_options='FBX_SCALE_ALL',
-                    axis_forward='Y',
-                    axis_up = 'Z',
-                    apply_unit_scale=True,
-                    use_space_transform=False,
-                    bake_space_transform=False,
-
+                    global_scale=(self.settings["global_scale"]),
+                    apply_scale_options=(self.settings["apply_scale_options"]),
+                    axis_forward=(self.settings["axis_forward"]),
+                    axis_up =(self.settings["axis_up"]),
+                    apply_unit_scale=(self.settings["apply_unit_scale"]),
+                    use_space_transform=(self.settings["use_space_transform"]),
+                    bake_space_transform=(self.settings["bake_space_transform"]),
                 # Geometry
-                    mesh_smooth_type='FACE',
-                    use_subsurf=True,
-                    use_mesh_modifiers=True,
-                    use_mesh_edges=False,
-                    use_triangles=True,
-                    use_tspace=False,
-                    colors_type='SRGB',
-                    
+                    mesh_smooth_type=(self.settings["mesh_smooth_type"]),
+                    use_subsurf=(self.settings["use_subsurf"]),
+                    use_mesh_modifiers=(self.settings["use_mesh_modifiers"]),
+                    use_mesh_edges=(self.settings["use_mesh_edges"]),
+                    use_triangles=(self.settings["use_triangles"]),
+                    use_tspace=(self.settings["use_tspace"]),
+                    colors_type=(self.settings["colors_type"]),
                 # Armature
-                    primary_bone_axis='Y',
-                    secondary_bone_axis='X',
-                    armature_nodetype='NULL',
-                    use_armature_deform_only=True,
-                    add_leaf_bones=False,
-
+                    primary_bone_axis=(self.settings["primary_bone_axis"]),
+                    secondary_bone_axis=(self.settings["secondary_bone_axis"]),
+                    armature_nodetype=(self.settings["armature_nodetype"]),
+                    use_armature_deform_only=(self.settings["use_armature_deform_only"]),
+                    add_leaf_bones=(self.settings["add_leaf_bones"]),
                 # Animation
-                    bake_anim=False,
-
-                    bake_anim_use_all_bones=True,
-                    bake_anim_use_nla_strips=False,
-                    bake_anim_use_all_actions=True,
-                    bake_anim_force_startend_keying=True,
-                    bake_anim_step=1.0,
-                    bake_anim_simplify_factor=0.05
+                    bake_anim=(self.settings["bake_anim"]),
+                    bake_anim_use_all_bones=(self.settings["bake_anim_use_all_bones"]),
+                    bake_anim_use_nla_strips=(self.settings["bake_anim_use_nla_strips"]),
+                    bake_anim_use_all_actions=(self.settings["bake_anim_use_all_actions"]),
+                    bake_anim_force_startend_keying=(self.settings["bake_anim_force_startend_keying"]),
+                    bake_anim_step=(self.settings["bake_anim_step"]),
+                    bake_anim_simplify_factor=(self.settings["bake_anim_simplify_factor"])
                     )
                     
                 obj.location = old_location
