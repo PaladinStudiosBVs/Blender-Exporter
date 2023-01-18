@@ -1,5 +1,7 @@
 {
-    "preset_name":"Unity Object",
+    "item":"UNITY_ANIM",
+    "name":"Unity Animation",
+    "description":"Export animations for Unity using the .fbx format, ",
 
     "batch_mode": "OFF",
     "check_existing": false,
@@ -23,7 +25,7 @@
     "use_mesh_edges": false,
     "use_triangles": true,
     "use_tspace": false,
-    "color_type": "SRGB",
+    "colors_type": "SRGB",
 
     "primary_bone_axis": "Y",
     "secondary_bone_axis": "X",

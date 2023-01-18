@@ -1,8 +1,8 @@
-import bpy
-from bpy.props import BoolProperty, StringProperty, FloatProperty, IntProperty, CollectionProperty
+from bpy.props import BoolProperty, StringProperty, FloatProperty, IntProperty, CollectionProperty, EnumProperty
 from bpy.utils import register_classes_factory
 from bpy.types import PropertyGroup
 
+preset_items =[]
 
 class ItemCollectionProperties(PropertyGroup):
     reset_origin: BoolProperty(name="Reset Origin", description="Enable, to place the object at the world origin when exporting", default=True)
@@ -13,9 +13,8 @@ class ItemCollectionProperties(PropertyGroup):
     collection_name: StringProperty()
 
 class ExportSetCollectionProperties(PropertyGroup):
-    set_preset:IntProperty(name='Export Preset', default=0)
+    set_preset_index:IntProperty(name="Preset Index", default=0)
     set_path: StringProperty(name="Export Set Path", subtype='DIR_PATH', description="Export path for this Export Set")
-
 
 class ExporterSceneProperties(PropertyGroup):
     path: StringProperty(name='Global Path', subtype='DIR_PATH')

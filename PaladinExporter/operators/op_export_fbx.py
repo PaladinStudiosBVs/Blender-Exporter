@@ -46,7 +46,8 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
 
         settings_folder = 'presets'
         settings_file = 'fbx_unity_object.json'
-        settings_path = os.path.join(os.path.dirname(__file__), settings_folder, settings_file)
+        current_path = os.path.dirname(__file__)
+        settings_path = os.path.join(os.path.dirname(current_path), settings_folder, settings_file)
 
         with open(settings_path, 'r') as settings_file:
             self.settings = json.load(settings_file)
