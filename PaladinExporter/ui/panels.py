@@ -1,8 +1,8 @@
 import bpy, os, json
 
 from ..operators import op_export_fbx, op_export_items
+from bpy.props import EnumProperty
 from ..utilities.icons import get_icon
-from ..utilities.utilities import scan_json_file, preset_items_get
 
 class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
     bl_idname = "VIEW3D_PT_Paladin_Exporter_Panel"
@@ -16,31 +16,35 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         export_data = context.scene.exporter
         items = export_data.items_list
         export_icon = get_icon('icon_export')
-        
-        presets_folder = "presets"
-        current_path = os.path.dirname(__file__)
-        presets_path = os.path.join(os.path.dirname(current_path), presets_folder)
-        
-        preset_items = preset_items_get(presets_path)
-
-        for i in range(len(presets)):
-            with open(presets[i], 'r') as settings_file:
-                self.settings = json.load(settings_file)
-                preset_names.append(self.settings["preset_name"])
-
-        for i in preset_names:
-            print (i)
 
         layout = self.layout
         layout.use_property_split = True
         layout.use_property_decorate = False
 
-        row = layout.row(align=True)
-        row.prop(export_data,'path', text='Global Path')
+        box = layout.box()
+        col = box.column(align=True)
 
-        layout.use_property_split = False
-        row = layout.row()
-        row.template_list("VIEW3D_UL_ExportList", "items_list", export_data, "items_list", export_data, "items_index")
+        row = col.row(align=False)
+        row.scale_y = 1.25
+        row.prop(export_data,'presets', text="", emboss=False)
+        
+        col = box.column(align=True)
+        
+        row = col.row(align=True)
+        row.prop(export_data, "path")
+        row = col.row(align=True)
+        row.prop(export_data, "filename_prefix", text="Affixes")
+        row.prop(export_data, "filename_suffix", text="")
+        
+
+        #layout.use_property_split = False
+        rows = 2
+        if len(items) >= 2:
+            rows = 3
+
+        row = box.row()
+        row.use_property_split = False
+        row.template_list("VIEW3D_UL_ExportList", "items_list", export_data, "items_list", export_data, "items_index", rows=rows)
         
         col = row.column(align=True)
         col.operator(op_export_items.Paladin_OT_ExportItemAdd.bl_idname, icon='ADD', text="")

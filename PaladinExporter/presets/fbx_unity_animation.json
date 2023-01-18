@@ -1,14 +1,9 @@
 {
-    "item":"UNITY_ANIM",
     "name":"Unity Animation",
     "description":"Export animations for Unity using the .fbx format, ",
 
-    "batch_mode": "OFF",
-    "check_existing": false,
-
     "use_visible": false,
-    "use_active_collection": false,
-    "object_types": ["ARMATURE","MESH","EMPTY"],
+    "object_types": ["ARMATURE","EMPTY"],
     "use_custom_props": false,
 
     "global_scale": 1.00,
@@ -33,7 +28,7 @@
     "use_armature_deform_only": true,
     "add_leaf_bones": false,
 
-    "bake_anim": false,
+    "bake_anim": true,
     "bake_anim_use_all_bones": true,
     "bake_anim_use_nla_strips": false,
     "bake_anim_use_all_actions": true,

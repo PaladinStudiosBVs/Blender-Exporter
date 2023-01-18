@@ -1,6 +1,7 @@
 import bpy
 import os
 import json
+from ..utilities.general import preset_path_get
 
 class Paladin_OT_ExportFbx(bpy.types.Operator):
     bl_idname = "paladin.exportfbx"
@@ -44,15 +45,14 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
         old_mode = context.object.mode
         exported_objects = []
 
-        settings_folder = 'presets'
-        settings_file = 'fbx_unity_object.json'
-        current_path = os.path.dirname(__file__)
-        settings_path = os.path.join(os.path.dirname(current_path), settings_folder, settings_file)
+        preset_path = preset_path_get()
+        preset_filename = getattr(export_data, 'presets')
+        preset_setting = os.path.join(preset_path, preset_filename)
 
-        with open(settings_path, 'r') as settings_file:
-            self.settings = json.load(settings_file)
+        self.report({'INFO'},f"{preset_setting}")
 
-        print(self.settings["object_types"])
+        with open(preset_setting, 'r') as preset_setting:
+            self.settings = json.load(preset_setting)
 
         bpy.ops.object.mode_set(mode='OBJECT')
         
@@ -76,13 +76,16 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                 obj.select_set(True)
                 context.view_layer.objects.active = obj
                 bpy.ops.object.select_grouped(extend=True, type='CHILDREN_RECURSIVE')
+                
+                filename = f"{export_data.filename_prefix}{obj.name}{export_data.filename_suffix}.fbx"
+                
+                '''
                 filename = obj.name
                 
-                #if export_data.bake_animation:
-                #    filename += export_data.filename_suffix
+                filename += export_data.filename_suffix
 
                 filename += ".fbx"
-                
+                '''
                 exported_objects.append(filename)
                 old_location = obj.location.copy()
 
@@ -95,12 +98,13 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
 
                 bpy.ops.export_scene.fbx(
                     filepath=bpy.path.abspath(export_path),
-                    batch_mode=(self.settings["batch_mode"]),
-                    check_existing=(self.settings["check_existing"]),
-                # Include
+                # Hard Coded
+                    batch_mode= "OFF",
+                    check_existing= False,
                     use_selection=True,
+                    use_active_collection=False,
+                # Include
                     use_visible=(self.settings["use_visible"]),
-                    use_active_collection=(self.settings["use_active_collection"]),
                     object_types=set(self.settings["object_types"]),
                     use_custom_props=(self.settings["use_custom_props"]),
                 # Transform
@@ -136,6 +140,8 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                     )
                     
                 obj.location = old_location
+
+                print(f"animation = {self.settings['bake_anim']}")
                 
         # Reporting number of exported objects:
         length = len(exported_objects)

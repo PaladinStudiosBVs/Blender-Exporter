@@ -1,13 +1,8 @@
 {
-    "item":"UNITY_OBJECT",
     "name":"Unity Object",
     "description":"Export objects for Unity using the .fbx format, ",
 
-    "batch_mode": "OFF",
-    "check_existing": false,
-
     "use_visible": false,
-    "use_active_collection": false,
     "object_types": ["ARMATURE","MESH","EMPTY"],
     "use_custom_props": false,
 
