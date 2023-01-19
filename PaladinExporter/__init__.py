@@ -17,6 +17,7 @@ if "bpy" in locals():
     # This will ensure everything is reloaded if already loaded once before.
     import imp
     imp.reload(op_export_fbx)
+    imp.reload(op_export_sets)
     imp.reload(op_export_items)
     imp.reload(panels)
     imp.reload(lists)
@@ -26,13 +27,13 @@ if "bpy" in locals():
     print("Reloading")
 
 import bpy
-from .operators import op_export_fbx, op_export_items
+from .operators import op_export_fbx, op_export_sets, op_export_items
 from .utilities import icons, general
 from .ui import panels, lists
 from .data import properties
 
 
-modules = (op_export_fbx, op_export_items, panels, lists, properties, icons)
+modules = (op_export_fbx, op_export_sets, op_export_items, panels, lists, properties, icons)
 
 def register():
     for module in modules:

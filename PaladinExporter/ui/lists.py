@@ -13,10 +13,6 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
             
             item = export_data.items_list[index]
 
-            #failsafe to keep export settings like they were
-            #if item.reset_origin:
-                #item.use_object_origin = False
-
             collection_found = False
             for collection in bpy.data.collections:
                 if collection.name == item.collection_name:

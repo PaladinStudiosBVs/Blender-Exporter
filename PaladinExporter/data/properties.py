@@ -15,8 +15,16 @@ class ItemCollectionProperties(PropertyGroup):
 
 class ExportSetCollectionProperties(PropertyGroup):
 
-    set_preset_index: IntProperty(name="Preset Index", default=0)
+    set_presets_get = preset_items_get()
+
+    set_preset: EnumProperty(name='Set Preset', items=set_presets_get)
     set_path: StringProperty(name="Export Set Path", subtype='DIR_PATH', description="Export path for this Export Set")
+    set_include: BoolProperty(name="Include Set", description="Enable, to include when exporting", default=True)
+    set_prefix: StringProperty(name="Prefix", default="")
+    set_suffix: StringProperty(name="Suffix", default="")
+
+    set_items_list: CollectionProperty(type=ItemCollectionProperties)
+    set_items_index: IntProperty(name="SetItemsIndex", default=0)
 
 class ExporterSceneProperties(PropertyGroup):
 

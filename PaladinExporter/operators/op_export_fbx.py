@@ -39,6 +39,7 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
 
     def execute(self, context):
         export_data = context.scene.exporter
+        set_values = export_data.set_list.values()
         items_values = export_data.items_list.values()
         old_selected = context.selected_objects
         old_active = context.view_layer.objects.active
