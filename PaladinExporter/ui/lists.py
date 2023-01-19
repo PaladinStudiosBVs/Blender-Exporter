@@ -6,6 +6,7 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
                   active_propname, index):
         
         export_data = context.scene.exporter
+        
         include = item.include_in_export
         custom_path = get_icon('custom_path')
         

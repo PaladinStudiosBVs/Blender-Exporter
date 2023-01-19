@@ -17,7 +17,9 @@ class Paladin_OT_ExportSetRemove(bpy.types.Operator):
     bl_idname = "paladin.export_set_remove"
     bl_label = "Remove Set"
     bl_description = "Removes an export set"
-    bl_options = {'REGISTER', 'UNDO'}
+    bl_options = {'UNDO'}
+
+    index:IntProperty(name="set_index", default=0)
 
     @classmethod
     def poll(cls, context):
@@ -27,9 +29,8 @@ class Paladin_OT_ExportSetRemove(bpy.types.Operator):
     def execute(self, context):
         export_data = context.scene.exporter
         sets = export_data.set_list
-        index = export_data.set_index
-        
-        sets.remove(index)
+
+        sets.remove(self.index)
         return{'FINISHED'}
 
 classes = (
