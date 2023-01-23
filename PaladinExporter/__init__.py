@@ -22,11 +22,12 @@ if "bpy" in locals():
     imp.reload(lists)
     imp.reload(properties)
     imp.reload(icons)
+    imp.reload(general)
     print("Reloading")
 
 import bpy
 from .operators import op_export_fbx, op_export_items
-from .utilities import icons
+from .utilities import icons, general
 from .ui import panels, lists
 from .data import properties
 

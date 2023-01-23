@@ -1,6 +1,7 @@
-import bpy
+import bpy, os, json
 
 from ..operators import op_export_fbx, op_export_items
+from bpy.props import EnumProperty
 from ..utilities.icons import get_icon
 
 class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
@@ -15,17 +16,35 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         export_data = context.scene.exporter
         items = export_data.items_list
         export_icon = get_icon('icon_export')
-        
+
         layout = self.layout
         layout.use_property_split = True
         layout.use_property_decorate = False
-        
-        row = layout.row(align=True)
-        row.prop(export_data,'path', text='Global Path')
 
-        layout.use_property_split = False
-        row = layout.row()
-        row.template_list("VIEW3D_UL_ExportList", "items_list", export_data, "items_list", export_data, "items_index")
+        box = layout.box()
+        col = box.column(align=True)
+
+        row = col.row(align=False)
+        row.scale_y = 1.25
+        row.prop(export_data,'presets', text="", emboss=False)
+        
+        col = box.column(align=True)
+        
+        row = col.row(align=True)
+        row.prop(export_data, "path")
+        row = col.row(align=True)
+        row.prop(export_data, "filename_prefix", text="Affixes")
+        row.prop(export_data, "filename_suffix", text="")
+        
+
+        #layout.use_property_split = False
+        rows = 2
+        if len(items) >= 2:
+            rows = 3
+
+        row = box.row()
+        row.use_property_split = False
+        row.template_list("VIEW3D_UL_ExportList", "items_list", export_data, "items_list", export_data, "items_index", rows=rows)
         
         col = row.column(align=True)
         col.operator(op_export_items.Paladin_OT_ExportItemAdd.bl_idname, icon='ADD', text="")
@@ -36,20 +55,6 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         if len(items) >= 2:
             col.operator(op_export_items.Paladin_OT_ExportItemMove.bl_idname, text="", icon="TRIA_UP").direction = "UP"
             col.operator(op_export_items.Paladin_OT_ExportItemMove.bl_idname, text="", icon="TRIA_DOWN").direction = "DOWN"
-
-        row = layout.row()
-        row.prop(export_data, 'include_meshes')
-        row.prop(export_data, 'bake_animation')
-
-        layout.use_property_split = True
-
-        if export_data.bake_animation:
-            row = layout.row()
-            row.prop(export_data, 'bake_anim_step')
-            row = layout.row()
-            row.prop(export_data, 'bake_anim_simplify_factor')
-            row = layout.row()
-            row.prop(export_data, 'filename_suffix')
         
         row = layout.row(align=True)
         row.scale_y = 1.25

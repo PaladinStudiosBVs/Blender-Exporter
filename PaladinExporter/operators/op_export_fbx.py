@@ -1,4 +1,7 @@
 import bpy
+import os
+import json
+from ..utilities.general import preset_path_get
 
 class Paladin_OT_ExportFbx(bpy.types.Operator):
     bl_idname = "paladin.exportfbx"
@@ -37,12 +40,19 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
     def execute(self, context):
         export_data = context.scene.exporter
         items_values = export_data.items_list.values()
-        
         old_selected = context.selected_objects
         old_active = context.view_layer.objects.active
         old_mode = context.object.mode
-        
         exported_objects = []
+
+        preset_path = preset_path_get()
+        preset_filename = getattr(export_data, 'presets')
+        preset_setting = os.path.join(preset_path, preset_filename)
+
+        self.report({'INFO'},f"{preset_setting}")
+
+        with open(preset_setting, 'r') as preset_setting:
+            self.settings = json.load(preset_setting)
 
         bpy.ops.object.mode_set(mode='OBJECT')
         
@@ -66,26 +76,21 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                 obj.select_set(True)
                 context.view_layer.objects.active = obj
                 bpy.ops.object.select_grouped(extend=True, type='CHILDREN_RECURSIVE')
+                
+                filename = f"{export_data.filename_prefix}{obj.name}{export_data.filename_suffix}.fbx"
+                
+                '''
                 filename = obj.name
                 
-
-                if export_data.bake_animation:
-                    filename += export_data.filename_suffix
+                filename += export_data.filename_suffix
 
                 filename += ".fbx"
-                
+                '''
                 exported_objects.append(filename)
-
                 old_location = obj.location.copy()
 
                 if not item_value.use_object_origin:
                     obj.location = (0,0,0)
-
-                types_to_export = {}
-                if export_data.include_meshes:
-                    types_to_export = {'ARMATURE','MESH','EMPTY'}
-                else:
-                    types_to_export = {'ARMATURE','EMPTY'}
 
                 export_path = item_value.custom_path + filename
                 if not item_value.use_custom_path or item_value.custom_path == "":
@@ -93,49 +98,55 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
 
                 bpy.ops.export_scene.fbx(
                     filepath=bpy.path.abspath(export_path),
+                # Hard Coded
+                    batch_mode= "OFF",
+                    check_existing= False,
                     use_selection=True,
-
-                    axis_forward='Y',
-                    axis_up = 'Z',
-
-                    object_types=types_to_export,
-                    apply_scale_options='FBX_SCALE_ALL',
-                    global_scale=1.00,
-                    apply_unit_scale=True,
-
-                    use_mesh_modifiers=True,
-                    mesh_smooth_type='FACE',
-                    batch_mode='OFF',
-                    use_custom_props=False,
-
-                    bake_space_transform=False,
-
-                    ## armature
-                    primary_bone_axis='Y',
-                    secondary_bone_axis='X',
-                    use_armature_deform_only=True,
-                    add_leaf_bones=False,
-
-                    ## animation
-                    bake_anim=export_data.bake_animation,
-                    bake_anim_use_all_bones=True,
-                    bake_anim_use_nla_strips=False,
-                    bake_anim_use_all_actions=True,
-                    bake_anim_force_startend_keying=True,
-                    bake_anim_step=export_data.bake_anim_step,
-                    bake_anim_simplify_factor=export_data.bake_anim_simplify_factor
+                    use_active_collection=False,
+                # Include
+                    use_visible=(self.settings["use_visible"]),
+                    object_types=set(self.settings["object_types"]),
+                    use_custom_props=(self.settings["use_custom_props"]),
+                # Transform
+                    global_scale=(self.settings["global_scale"]),
+                    apply_scale_options=(self.settings["apply_scale_options"]),
+                    axis_forward=(self.settings["axis_forward"]),
+                    axis_up =(self.settings["axis_up"]),
+                    apply_unit_scale=(self.settings["apply_unit_scale"]),
+                    use_space_transform=(self.settings["use_space_transform"]),
+                    bake_space_transform=(self.settings["bake_space_transform"]),
+                # Geometry
+                    mesh_smooth_type=(self.settings["mesh_smooth_type"]),
+                    use_subsurf=(self.settings["use_subsurf"]),
+                    use_mesh_modifiers=(self.settings["use_mesh_modifiers"]),
+                    use_mesh_edges=(self.settings["use_mesh_edges"]),
+                    use_triangles=(self.settings["use_triangles"]),
+                    use_tspace=(self.settings["use_tspace"]),
+                    colors_type=(self.settings["colors_type"]),
+                # Armature
+                    primary_bone_axis=(self.settings["primary_bone_axis"]),
+                    secondary_bone_axis=(self.settings["secondary_bone_axis"]),
+                    armature_nodetype=(self.settings["armature_nodetype"]),
+                    use_armature_deform_only=(self.settings["use_armature_deform_only"]),
+                    add_leaf_bones=(self.settings["add_leaf_bones"]),
+                # Animation
+                    bake_anim=(self.settings["bake_anim"]),
+                    bake_anim_use_all_bones=(self.settings["bake_anim_use_all_bones"]),
+                    bake_anim_use_nla_strips=(self.settings["bake_anim_use_nla_strips"]),
+                    bake_anim_use_all_actions=(self.settings["bake_anim_use_all_actions"]),
+                    bake_anim_force_startend_keying=(self.settings["bake_anim_force_startend_keying"]),
+                    bake_anim_step=(self.settings["bake_anim_step"]),
+                    bake_anim_simplify_factor=(self.settings["bake_anim_simplify_factor"])
                     )
                     
                 obj.location = old_location
+
+                print(f"animation = {self.settings['bake_anim']}")
                 
         # Reporting number of exported objects:
         length = len(exported_objects)
         if length == 0:
-            self.report({'ERROR'},"No objects in exported collections!"
-
-
-
-)
+            self.report({'ERROR'},"No objects in exported collections!")
         elif length == 1:
             self.report({'INFO'},"1 object was exported")
         else:
