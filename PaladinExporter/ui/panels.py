@@ -25,18 +25,15 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         col.scale_y = 1.5
         col.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='', icon_value=export_icon)
         
-
-
         for i, set in enumerate(sets):
-            layout = self.layout.box()
-            self.draw_set(layout, set, i, export_data)
+            self.draw_set(set, i)
 
-        layout = self.layout
-        box = layout.box()
+        box = self.layout.box()
         box.operator(op_export_sets.Paladin_OT_ExportSetAdd .bl_idname, icon='ADD', text="", emboss=False)
 
-    def draw_set(self, layout, set, index, export_data):
+    def draw_set(self, set, index):
         items = set.items
+        layout = self.layout.box()
         layout.use_property_decorate = False
 
         col = layout.column(align=True)
@@ -66,12 +63,12 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         
         col = row.column(align=True)
 
-        col.operator(op_export_sets.Paladin_OT_ExportSetItemAdd .bl_idname, icon='ADD', text="").set_index=index
+        col.operator(op_export_sets.Paladin_OT_ExportSetItemAdd.bl_idname, icon='ADD', text="").set_index=index
         
         row = col.row(align=True)
         if len(items) < 1:
             row.enabled = False
-        row.operator(op_export_sets.Paladin_OT_ExportSetItemRemove .bl_idname, icon='REMOVE', text="").set_index=index
+        row.operator(op_export_sets.Paladin_OT_ExportSetItemRemove.bl_idname, icon='REMOVE', text="").set_index=index
         #col.separator()
         if len(items) > 1:
             op = col.operator(op_export_sets.Paladin_OT_ExportSetItemMove.bl_idname, text="", icon="TRIA_UP")

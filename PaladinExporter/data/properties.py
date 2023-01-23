@@ -6,12 +6,12 @@ from ..utilities.general import preset_items_get
 #preset_items = []
 
 class ItemCollectionProperties(PropertyGroup):
-    reset_origin: BoolProperty(name="Reset Origin", description="Enable, to place the object at the world origin when exporting", default=True)
-    include_in_export: BoolProperty(name="", description="Enable, to include when exporting", default=True)
-    use_custom_path: BoolProperty(name="Custom Path", description="Use a custom path, Click 'X' to disable", default=False)
-    use_object_origin: BoolProperty(name="Relative Position", description="Enable, to have objects retain their relative position", default=False)
-    custom_path: StringProperty(name="Path", subtype='DIR_PATH', description="Custom export path for this collection")
-    collection_name: StringProperty()
+    #reset_origin: BoolProperty(name="Reset Origin", description="Enable, to place the object at the world origin when exporting", default=True)
+    item_include: BoolProperty(name="", description="Enable, to include when exporting", default=True)
+    item_use_path: BoolProperty(name="Custom Path", description="Use a custom path, Click 'X' to disable", default=False)
+    item_use_origin: BoolProperty(name="Relative Position", description="Enable, to have objects retain their relative position", default=False)
+    item_path: StringProperty(name="Path", subtype='DIR_PATH', description="Custom export path for this collection")
+    item_name: StringProperty()
 
 class ExportSetCollectionProperties(PropertyGroup):
 

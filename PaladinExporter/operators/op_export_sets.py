@@ -54,12 +54,12 @@ class Paladin_OT_ExportSetItemAdd(bpy.types.Operator):
         set = export_data.sets[self.set_index]
         
         for item in set.items:
-            if item.collection_name == collection.name:
+            if item.item_name == collection.name:
                 self.report({'WARNING'}, f"Collection '{collection.name}' already in set {self.set_index + 1}.")
                 return {'CANCELLED'}
         
         item = set.items.add()
-        item.collection_name = collection.name
+        item.item_name = collection.name
         set.items_index = len(set.items)-1
         
         return{'FINISHED'}
