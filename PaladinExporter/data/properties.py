@@ -23,21 +23,14 @@ class ExportSetCollectionProperties(PropertyGroup):
     set_prefix: StringProperty(name="Prefix", default="")
     set_suffix: StringProperty(name="Suffix", default="")
 
-    set_items_list: CollectionProperty(type=ItemCollectionProperties)
-    set_items_index: IntProperty(name="SetItemsIndex", default=0)
+    items: CollectionProperty(type=ItemCollectionProperties)
+    items_index: IntProperty(name="SetItemsIndex", default=0)
 
 class ExporterSceneProperties(PropertyGroup):
 
-    preset_items = preset_items_get()
+    sets: CollectionProperty(type=ExportSetCollectionProperties)
+    sets_index: IntProperty(name="ExportSetIndex", default=0)
 
-    presets: EnumProperty(name='Preset', items=preset_items)
-    path: StringProperty(name='Path', subtype='DIR_PATH')
-    items_list: CollectionProperty(type=ItemCollectionProperties)
-    items_index: IntProperty(name="ExportItemsIndex", default=0)
-    set_list: CollectionProperty(type=ExportSetCollectionProperties)
-    set_index: IntProperty(name="ExportSetIndex", default=0)
-    filename_suffix: StringProperty(name="Suffix", default="")
-    filename_prefix: StringProperty(name="Prefix", default="")
 
 classes = (ItemCollectionProperties, ExportSetCollectionProperties, ExporterSceneProperties, )
 
