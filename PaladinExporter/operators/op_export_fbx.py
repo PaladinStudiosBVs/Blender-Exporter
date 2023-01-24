@@ -1,7 +1,11 @@
 import bpy
 import os
 import json
+from bpy.props import BoolProperty
 from ..utilities.general import preset_path_get, is_collection_valid, has_export_sets, has_sets_include, included_sets_has_item
+from ..utilities.exporters import export_fbx
+
+export_selected: BoolProperty(name="Export Selected", default=False)
 
 class Paladin_OT_ExportFbx(bpy.types.Operator):
     bl_idname = "paladin.exportfbx"
@@ -42,7 +46,7 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
             old_active = context.view_layer.objects.active
             old_mode = context.object.mode
 
-        exported_objects = []
+        
         
         for export_set in export_sets:
             if export_set.set_include == False:
@@ -53,24 +57,43 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
             for item in export_set.items:
                 if item.item_include == False:
                     continue
-                
                 if not is_collection_valid(item.item_name):
                     print(f"Collection not found: '{item.item_name}'")
                     continue
                 collection = bpy.data.collections[item.item_name]
                 
+                # Checking which objects to export for this collection:
                 parent_objects = []
+                parent_objects_selected = []
+                object_types = ('MESH','EMPTY','ARMATURE')
+
                 for obj in collection.objects:
-                    if obj.parent == None and obj.type in ('MESH','EMPTY','ARMATURE') and obj.visible_get() == True:
+                    if obj.parent == None and obj.type in object_types and obj.visible_get() == True:
                         parent_objects.append(obj)
                 
+                    if not obj.parent == None and obj.type in object_types and obj.select_get() == True and obj.parent.visible_get() == True:
+                        obj = obj.parent
+                        parent_objects_selected.append(obj)
+                
+                    if obj.parent == None and obj.type in object_types and obj.select_get() == True and obj.visible_get() == True :
+                        parent_objects_selected.append(obj)
+                
+                # If there are no objects in the list it will continue with other collections:
                 if len(parent_objects) == 0:
                     continue
+
+                for obj in parent_objects_selected:
+                    print(obj.name)
                 
+                # Parent objects in the collection will now be setup for export:
                 old_mode = context.object.mode
                 bpy.ops.object.mode_set(mode='OBJECT')
-
-                for obj in parent_objects:
+                
+                export_objects = parent_objects
+                if self.export_selected:
+                    export_objects = parent_objects_selected
+                
+                for obj in export_objects:
                     bpy.ops.object.select_all(action='DESELECT')
                     obj.select_set(True)
                     context.view_layer.objects.active = obj
@@ -81,61 +104,20 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                     
                     # Defining file name and export location:
                     filename = f"{export_set.set_prefix}{obj.name}{export_set.set_suffix}.fbx"
-                    exported_objects.append(filename)
-                    
                     export_path = os.path.join(os.path.dirname(bpy.data.filepath), filename)
                     if item.item_use_path and not item.item_path == "":
                         export_path = os.path.join(item.item_path, filename)
                     elif not export_set.set_path == "":
                         export_path = os.path.join(export_set.set_path, filename)
                     
-                    bpy.ops.export_scene.fbx(
-                        filepath=bpy.path.abspath(export_path),
-                    # Hard Coded
-                        batch_mode= "OFF",
-                        check_existing= False,
-                        use_selection=True,
-                        use_active_collection=False,
-                    # Include
-                        use_visible=(self.settings["use_visible"]),
-                        object_types= set(self.settings["object_types"]),
-                        use_custom_props=(self.settings["use_custom_props"]),
-                    # Transform
-                        global_scale=(self.settings["global_scale"]),
-                        apply_scale_options=(self.settings["apply_scale_options"]),
-                        axis_forward=(self.settings["axis_forward"]),
-                        axis_up =(self.settings["axis_up"]),
-                        apply_unit_scale=(self.settings["apply_unit_scale"]),
-                        use_space_transform=(self.settings["use_space_transform"]),
-                        bake_space_transform=(self.settings["bake_space_transform"]),
-                    # Geometry
-                        mesh_smooth_type=(self.settings["mesh_smooth_type"]),
-                        use_subsurf=(self.settings["use_subsurf"]),
-                        use_mesh_modifiers=(self.settings["use_mesh_modifiers"]),
-                        use_mesh_edges=(self.settings["use_mesh_edges"]),
-                        use_triangles=(self.settings["use_triangles"]),
-                        use_tspace=(self.settings["use_tspace"]),
-                        colors_type=(self.settings["colors_type"]),
-                    # Armature
-                        primary_bone_axis=(self.settings["primary_bone_axis"]),
-                        secondary_bone_axis=(self.settings["secondary_bone_axis"]),
-                        armature_nodetype=(self.settings["armature_nodetype"]),
-                        use_armature_deform_only=(self.settings["use_armature_deform_only"]),
-                        add_leaf_bones=(self.settings["add_leaf_bones"]),
-                    # Animation
-                        bake_anim=(self.settings["bake_anim"]),
-                        bake_anim_use_all_bones=(self.settings["bake_anim_use_all_bones"]),
-                        bake_anim_use_nla_strips=(self.settings["bake_anim_use_nla_strips"]),
-                        bake_anim_use_all_actions=(self.settings["bake_anim_use_all_actions"]),
-                        bake_anim_force_startend_keying=(self.settings["bake_anim_force_startend_keying"]),
-                        bake_anim_step=(self.settings["bake_anim_step"]),
-                        bake_anim_simplify_factor=(self.settings["bake_anim_simplify_factor"])
-                        )
-
+                    # Exporting using fbx:
+                    export_fbx(self, export_path)
+                    # Resetting object position:
+                    
                     obj.location = old_location
         
         # Reporting number of exported objects:
-        length = len(exported_objects)
+        length = len(export_objects)
         if length == 0:
             self.report({'ERROR'},"No objects were exported")
         elif length == 1:
