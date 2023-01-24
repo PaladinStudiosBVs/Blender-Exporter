@@ -2,7 +2,7 @@
 bl_info = {
     "name": "Paladin Exporter",
     "description": "Export multiple assets",
-    "author": "Joep Peeters, Laurens 't Jong",
+    "author": "Joep Peters, Laurens 't Jong",
     "blender": (3, 4, 0),
     "version": (0, 1, 4),
     "category": "3D View",

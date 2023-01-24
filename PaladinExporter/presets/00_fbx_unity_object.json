@@ -1,6 +1,6 @@
 {
     "name":"Unity Object",
-    "description":"Export objects for Unity using the .fbx format, ",
+    "description":"Export objects for Unity using the .fbx format",
 
     "use_visible": false,
     "object_types": ["ARMATURE","MESH","EMPTY"],

@@ -38,7 +38,7 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         row = col.row(align=False)
         
         row.prop(set, "set_include", text="")
-        row.prop(set,'set_preset', text="", emboss=False)
+        row.prop(set,'set_preset', text="", emboss=True)
         row.operator(op_export_sets.Paladin_OT_ExportSetRemove.bl_idname, icon='TRASH', text="", emboss=False).index=index
 
         col = layout.column(align=True)
@@ -57,7 +57,7 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
 
         row = layout.row()
         row.use_property_split = False
-        row.template_list("VIEW3D_UL_ExportList", "items", set, "items", set, "items_index", rows=rows)
+        row.template_list("VIEW3D_UL_ExportList", f"Export Set {index}", set, "items", set, "items_index", rows=rows)
         
         col = row.column(align=True)
 
