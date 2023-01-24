@@ -3,14 +3,12 @@ import bpy, os, json
 from ..operators import op_export_fbx, op_export_sets
 from ..utilities.icons import get_icon
 
-
 class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
     bl_idname = "VIEW3D_PT_Paladin_Exporter_Panel"
     bl_label = "Paladin Exporter"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Paladin Studios"
-    bl_order = 0
 
     def draw(self, context):
         export_data = context.scene.exporter
