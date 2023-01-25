@@ -1,4 +1,4 @@
-import bpy, json, os
+import bpy, json, os, sys
 
 def get_path():
     return os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -53,6 +53,15 @@ def included_sets_has_item():
                 has_items = True
                 break
     return has_items
+
+def get_event_modifiers(event):
+    ctrl = event.ctrl
+    if sys.platform.startswith('darwin'):
+        ctrl = event.oskey
+    alt = event.alt
+    shift = event.shift
+    return ctrl, alt, shift
+
             
     
     
