@@ -10,6 +10,7 @@ class ItemCollectionProperties(PropertyGroup):
     item_include: BoolProperty(name="", description="Enable, to include when exporting", default=True)
     item_use_path: BoolProperty(name="Custom Path", description="Use a custom path, Click 'X' to disable", default=False)
     item_use_origin: BoolProperty(name="Relative Position", description="Enable, to have objects retain their relative position", default=False)
+    item_use_collection: BoolProperty(name="Collection is Object", description="Enable, so the collection is the exported object", default=False)
     item_path: StringProperty(name="Path", subtype='DIR_PATH', description="Custom export path for this collection")
     item_name: StringProperty()
 

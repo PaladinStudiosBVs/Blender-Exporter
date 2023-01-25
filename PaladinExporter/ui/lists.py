@@ -36,6 +36,7 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
         else: 
             row.prop(item, 'item_use_path', icon_only=True, icon_value=icon_path)
             row.prop(item, 'item_use_origin', icon_only=True, icon='OBJECT_ORIGIN')
+            row.prop(item, 'item_use_collection', icon_only=True, icon='OUTLINER_COLLECTION')
             
 classes = (VIEW3D_UL_ExportList,)
 
