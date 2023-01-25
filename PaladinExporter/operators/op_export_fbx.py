@@ -74,11 +74,17 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                 if export_item.item_use_collection == True:
                     if collection.hide_viewport:
                         continue
-                    print(f"{export_item.item_name} use collection is {export_item.item_use_collection}")
+                    collection_objects = []
+                    for obj in collection.objects:
+                        if obj.parent == None and obj.type in object_types and obj.visible_get() == True:
+                            collection_objects.append(obj)
+                    if len(collection_objects) <1:
+                        continue    
+                    for obj in collection_objects:
+                        obj.select_set(True)
+
                     bpy.ops.object.mode_set(mode='OBJECT')
                     bpy.ops.object.select_all(action='DESELECT')
-                    for obj in collection.objects:
-                        obj.select_set(True)
                     filename = f"{export_set.set_prefix}{collection.name}{export_set.set_suffix}.fbx"
                     export_path = os.path.join(os.path.dirname(bpy.data.filepath), filename)
                     if export_item.item_use_path and not export_item.item_path == "":
