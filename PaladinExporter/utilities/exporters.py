@@ -27,7 +27,7 @@ def export_fbx(self, export_path):
             use_mesh_edges=(self.settings["use_mesh_edges"]),
             use_triangles=(self.settings["use_triangles"]),
             use_tspace=(self.settings["use_tspace"]),
-            colors_type=(self.settings["colors_type"]),
+            #colors_type=(self.settings["colors_type"]),
         # Armature
             primary_bone_axis=(self.settings["primary_bone_axis"]),
             secondary_bone_axis=(self.settings["secondary_bone_axis"]),
