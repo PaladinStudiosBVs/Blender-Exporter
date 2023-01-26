@@ -1,7 +1,6 @@
 import bpy
 from bpy.props import EnumProperty, IntProperty
 
-
 class Paladin_OT_ExportSetAdd(bpy.types.Operator):
     bl_idname = "paladin.export_set_add"
     bl_label = "Add Set"
@@ -13,7 +12,6 @@ class Paladin_OT_ExportSetAdd(bpy.types.Operator):
         sets = export_data.sets
         sets.add()
         return{'FINISHED'}
-
 
 class Paladin_OT_ExportSetRemove(bpy.types.Operator):
     bl_idname = "paladin.export_set_remove"
@@ -31,10 +29,8 @@ class Paladin_OT_ExportSetRemove(bpy.types.Operator):
     def execute(self, context):
         export_data = context.scene.exporter
         sets = export_data.sets
-
         sets.remove(self.index)
         return{'FINISHED'}
-
 
 class Paladin_OT_ExportSetItemAdd(bpy.types.Operator):
     bl_idname = "paladin.export_set_items_add"
@@ -61,7 +57,6 @@ class Paladin_OT_ExportSetItemAdd(bpy.types.Operator):
         item = set.items.add()
         item.item_name = collection.name
         set.items_index = len(set.items)-1
-        
         return{'FINISHED'}
 
 class Paladin_OT_ExportSetItemRemove(bpy.types.Operator):
@@ -112,7 +107,6 @@ class Paladin_OT_ExportSetItemMove(bpy.types.Operator):
             
         items.move(index, next_index)
         set.items_index = next_index
-        
         return{'FINISHED'}
 
 classes = (
