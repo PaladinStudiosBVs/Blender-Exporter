@@ -4,7 +4,7 @@ bl_info = {
     "description": "Export multiple assets",
     "author": "Joep Peters, Laurens 't Jong",
     "blender": (3, 4, 0),
-    "version": (1, 1, 1),
+    "version": (1, 1, 2),
     "category": "3D View",
     "location": "View3D",
     "warning": "",
