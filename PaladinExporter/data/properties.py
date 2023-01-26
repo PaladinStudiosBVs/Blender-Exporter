@@ -6,30 +6,31 @@ from ..utilities.general import preset_items_get
 #preset_items = []
 
 class ItemCollectionProperties(PropertyGroup):
-    reset_origin: BoolProperty(name="Reset Origin", description="Enable, to place the object at the world origin when exporting", default=True)
-    include_in_export: BoolProperty(name="", description="Enable, to include when exporting", default=True)
-    use_custom_path: BoolProperty(name="Custom Path", description="Use a custom path, Click 'X' to disable", default=False)
-    use_object_origin: BoolProperty(name="Relative Position", description="Enable, to have objects retain their relative position", default=False)
-    custom_path: StringProperty(name="Path", subtype='DIR_PATH', description="Custom export path for this collection")
-    collection_name: StringProperty()
+    #reset_origin: BoolProperty(name="Reset Origin", description="Enable, to place the object at the world origin when exporting", default=True)
+    item_include: BoolProperty(name="", description="Enable, to include when exporting", default=True)
+    item_use_path: BoolProperty(name="Custom Path", description="Use a custom path, Click 'X' to disable", default=False)
+    item_use_origin: BoolProperty(name="Relative Position", description="Enable, to have objects retain their relative position", default=False)
+    item_path: StringProperty(name="Path", subtype='DIR_PATH', description="Custom export path for this collection")
+    item_name: StringProperty()
 
 class ExportSetCollectionProperties(PropertyGroup):
 
-    set_preset_index: IntProperty(name="Preset Index", default=0)
+    set_presets_get = preset_items_get()
+
+    set_preset: EnumProperty(name='Set Preset', items=set_presets_get)
     set_path: StringProperty(name="Export Set Path", subtype='DIR_PATH', description="Export path for this Export Set")
+    set_include: BoolProperty(name="Include Set", description="Enable, to include when exporting", default=True)
+    set_prefix: StringProperty(name="Prefix", default="")
+    set_suffix: StringProperty(name="Suffix", default="")
+
+    items: CollectionProperty(type=ItemCollectionProperties)
+    items_index: IntProperty(name="SetItemsIndex", default=0)
 
 class ExporterSceneProperties(PropertyGroup):
 
-    preset_items = preset_items_get()
+    sets: CollectionProperty(type=ExportSetCollectionProperties)
+    sets_index: IntProperty(name="ExportSetIndex", default=0)
 
-    presets: EnumProperty(name='Preset', items=preset_items)
-    path: StringProperty(name='Path', subtype='DIR_PATH')
-    items_list: CollectionProperty(type=ItemCollectionProperties)
-    items_index: IntProperty(name="ExportItemsIndex", default=0)
-    set_list: CollectionProperty(type=ExportSetCollectionProperties)
-    set_index: IntProperty(name="ExportSetIndex", default=0)
-    filename_suffix: StringProperty(name="Suffix", default="")
-    filename_prefix: StringProperty(name="Prefix", default="")
 
 classes = (ItemCollectionProperties, ExportSetCollectionProperties, ExporterSceneProperties, )
 

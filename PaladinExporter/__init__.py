@@ -1,10 +1,10 @@
 # Addon info
 bl_info = {
-    "name": "Paladin Exporter",
+    "name": "Paladin Game Exporter",
     "description": "Export multiple assets",
-    "author": "Joep Peeters, Laurens 't Jong",
+    "author": "Joep Peters, Laurens 't Jong",
     "blender": (3, 4, 0),
-    "version": (0, 1, 4),
+    "version": (1, 0, 1),
     "category": "3D View",
     "location": "View3D",
     "warning": "",
@@ -17,22 +17,23 @@ if "bpy" in locals():
     # This will ensure everything is reloaded if already loaded once before.
     import imp
     imp.reload(op_export_fbx)
-    imp.reload(op_export_items)
+    imp.reload(op_export_sets)
     imp.reload(panels)
     imp.reload(lists)
     imp.reload(properties)
+    imp.reload(items)
     imp.reload(icons)
     imp.reload(general)
     print("Reloading")
 
 import bpy
-from .operators import op_export_fbx, op_export_items
+from .operators import op_export_fbx, op_export_sets
 from .utilities import icons, general
 from .ui import panels, lists
-from .data import properties
+from .data import properties, items
 
 
-modules = (op_export_fbx, op_export_items, panels, lists, properties, icons)
+modules = (op_export_fbx, op_export_sets, panels, lists, properties, icons)
 
 def register():
     for module in modules:
