@@ -62,6 +62,13 @@ def get_event_modifiers(event):
     shift = event.shift
     return ctrl, alt, shift
 
+def get_export_path(export_set, export_item, filename):
+    export_path = os.path.join(os.path.dirname(bpy.data.filepath), filename)
+    if export_item.item_use_path and not export_item.item_path == "":
+        export_path = os.path.join(export_item.item_path, filename)
+    elif not export_set.set_path == "":
+        export_path = os.path.join(export_set.set_path, filename)
+    return export_path
             
     
     
