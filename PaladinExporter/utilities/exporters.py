@@ -1,8 +1,7 @@
-import bpy, json, os
+import bpy
 
 def export_fbx(self, export_path):
-    bpy.ops.export_scene.fbx(
-            filepath=bpy.path.abspath(export_path),
+    bpy.ops.export_scene.fbx(filepath=bpy.path.abspath(export_path),
         # Hard Coded
             batch_mode= "OFF",
             check_existing= False,
@@ -27,6 +26,7 @@ def export_fbx(self, export_path):
             use_mesh_edges=(self.settings["use_mesh_edges"]),
             use_triangles=(self.settings["use_triangles"]),
             use_tspace=(self.settings["use_tspace"]),
+            # Breaks exporter in blender before 3.5, needs condition:
             #colors_type=(self.settings["colors_type"]),
         # Armature
             primary_bone_axis=(self.settings["primary_bone_axis"]),
@@ -43,4 +43,3 @@ def export_fbx(self, export_path):
             bake_anim_step=(self.settings["bake_anim_step"]),
             bake_anim_simplify_factor=(self.settings["bake_anim_simplify_factor"])
             )
-
