@@ -3,7 +3,7 @@ from bpy.utils import register_classes_factory
 from bpy.types import PropertyGroup
 from ..utilities.general import preset_items_get
 
-class ItemCollectionProperties(PropertyGroup):
+class ExportItemProperties(PropertyGroup):
     include: BoolProperty(name="", description="Enable, to include when exporting", default=True)
     use_path: BoolProperty(name="Custom Path", description="Use a custom path, Click 'X' to disable", default=False)
     use_origin: BoolProperty(name="Relative Position", description="Enable, to have objects retain their relative position", default=False)
@@ -11,7 +11,7 @@ class ItemCollectionProperties(PropertyGroup):
     path: StringProperty(name="Path", subtype='DIR_PATH', description="Custom export path for this collection")
     name: StringProperty()
 
-class ExportSetCollectionProperties(PropertyGroup):
+class ExportSetProperties(PropertyGroup):
     set_presets_get = preset_items_get()
 
     preset: EnumProperty(name='Set Preset', items=set_presets_get)
@@ -19,15 +19,15 @@ class ExportSetCollectionProperties(PropertyGroup):
     include: BoolProperty(name="Include Set", description="Enable, to include when exporting", default=True)
     prefix: StringProperty(name="Prefix", default="")
     suffix: StringProperty(name="Suffix", default="")
-    items: CollectionProperty(type=ItemCollectionProperties)
+    items: CollectionProperty(type=ExportItemProperties)
     items_index: IntProperty(name="SetItemsIndex", default=0)
 
 class ExporterSceneProperties(PropertyGroup):
 
-    sets: CollectionProperty(type=ExportSetCollectionProperties)
+    sets: CollectionProperty(type=ExportSetProperties)
     sets_index: IntProperty(name="ExportSetIndex", default=0)
 
-classes = (ItemCollectionProperties, ExportSetCollectionProperties, ExporterSceneProperties, )
+classes = (ExportItemProperties, ExportSetProperties, ExporterSceneProperties, )
 
 register, unregister = register_classes_factory(classes)
 
