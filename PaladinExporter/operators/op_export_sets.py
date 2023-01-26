@@ -36,10 +36,19 @@ class Paladin_OT_ExportSetItemAdd(bpy.types.Operator):
     bl_options = {'UNDO'}
 
     set_index:IntProperty(name="Set Index", default=0)
-  
+    
+    @classmethod
+    def poll(cls, context):
+        collection = context.collection
+        if collection.name == 'Scene Collection':
+            return False
+        return True
+            
     @classmethod
     def description(cls, context, event):
         collection = context.collection
+        if collection.name == 'Scene Collection':
+            return "You cannot add 'Scene Collection'"
         return f"Adds Collection '{collection.name}' to this export set"
 
     def execute(self, context):
@@ -50,6 +59,8 @@ class Paladin_OT_ExportSetItemAdd(bpy.types.Operator):
             if item.name == collection.name:
                 self.report({'WARNING'}, f"Collection '{collection.name}' already in set {self.set_index + 1}.")
                 return {'CANCELLED'}
+        #if collection.name == 'Scene Collection':
+           # self.report({'WARNING'}, f"Collection '{collection.name}' already in set {self.set_index + 1}.")
         
         item = set.items.add()
         item.name = collection.name
