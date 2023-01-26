@@ -22,7 +22,7 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
             col_cell.enabled = include
             col_cell.label(text=item.name)
             path_cell = split.column()
-            path_cell.prop(item, 'item_path', text="")
+            path_cell.prop(item, 'path', text="")
         else:
             col_cell = row.column()
             col_cell.enabled = include
@@ -30,12 +30,12 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
 
         if item.use_path:
             row.prop(item, 'use_path', icon_only=True, icon='PANEL_CLOSE', emboss=False)
-            col = row.column()
-            col.prop(item, 'use_origin', icon_only=True, icon='OBJECT_ORIGIN')
+            row.prop(item, 'use_origin', icon_only=True, icon='OBJECT_ORIGIN', emboss=True)
+            row.prop(item, 'use_collection', icon_only=True, icon='OUTLINER_COLLECTION', emboss=True)
         else: 
-            row.prop(item, 'use_path', icon_only=True, icon_value=icon_path)
-            row.prop(item, 'use_origin', icon_only=True, icon='OBJECT_ORIGIN')
-            row.prop(item, 'use_collection', icon_only=True, icon='OUTLINER_COLLECTION')
+            row.prop(item, 'use_path', icon_only=True, icon_value=icon_path, emboss=True)
+            row.prop(item, 'use_origin', icon_only=True, icon='OBJECT_ORIGIN', emboss=True)
+            row.prop(item, 'use_collection', icon_only=True, icon='OUTLINER_COLLECTION', emboss=True)
             
 classes = (VIEW3D_UL_ExportList,)
 
