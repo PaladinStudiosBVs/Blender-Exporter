@@ -26,7 +26,7 @@ def export_fbx(self, export_path):
             use_mesh_edges=(self.settings["use_mesh_edges"]),
             use_triangles=(self.settings["use_triangles"]),
             use_tspace=(self.settings["use_tspace"]),
-            # Breaks exporter in blender before 3.5, needs condition:
+            # Breaks exporter in blender before 3.4, needs condition:
             #colors_type=(self.settings["colors_type"]),
         # Armature
             primary_bone_axis=(self.settings["primary_bone_axis"]),
