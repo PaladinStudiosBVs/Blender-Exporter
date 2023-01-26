@@ -52,16 +52,16 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
         exported_objects = []
         
         for export_set in export_sets:
-            if export_set.set_include == False:
+            if export_set.include == False:
                 continue
             
-            self.settings = json.load(open(os.path.join(preset_path, export_set.set_preset), 'r'))
-            prefix = export_set.set_prefix
-            suffix = export_set.set_suffix
+            self.settings = json.load(open(os.path.join(preset_path, export_set.preset), 'r'))
+            prefix = export_set.prefix
+            suffix = export_set.suffix
             
             for export_item in export_set.items:
-                item_name = export_item.item_name
-                if export_item.item_include == False:
+                item_name = export_item.name
+                if export_item.include == False:
                     continue
                 if not is_collection_valid(item_name):
                     print(f"Collection not found: '{item_name}'")
@@ -71,7 +71,7 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                 export_objects = []
                 
                 # With export item use collection:
-                if export_item.item_use_collection == True:
+                if export_item.use_collection == True:
                     v_collection = bpy.context.view_layer.layer_collection.children[item_name]
                     export_objects_collection = []
                     if collection.hide_viewport or v_collection.exclude:
@@ -111,7 +111,7 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                         continue
                 
                 # Exporting if use collection as object is disabled:          
-                if export_item.item_use_collection == False and len(export_objects) > 0:
+                if export_item.use_collection == False and len(export_objects) > 0:
                     for obj in export_objects:
                         filename = (prefix)+(obj.name)+(suffix)+".fbx"
                         export_path = get_export_path(export_set, export_item, filename)
@@ -122,7 +122,7 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                         obj.select_set(True)
                         context.view_layer.objects.active = obj
                         old_location = obj.location.copy()
-                        if not export_item.item_use_origin:
+                        if not export_item.use_origin:
                             obj.location = (0,0,0)
                         export_fbx(self, export_path)
                         obj.location = old_location

@@ -8,9 +8,8 @@ class Paladin_OT_ExportSetAdd(bpy.types.Operator):
     bl_options = {'UNDO'}
     
     def execute(self, context):
-        export_data = context.scene.exporter
-        sets = export_data.sets
-        sets.add()
+        export_sets = context.scene.exporter.sets
+        export_sets.add()
         return{'FINISHED'}
 
 class Paladin_OT_ExportSetRemove(bpy.types.Operator):
@@ -27,8 +26,7 @@ class Paladin_OT_ExportSetRemove(bpy.types.Operator):
         return export_data.sets
 
     def execute(self, context):
-        export_data = context.scene.exporter
-        sets = export_data.sets
+        sets = context.scene.exporter.sets
         sets.remove(self.index)
         return{'FINISHED'}
 
@@ -46,16 +44,15 @@ class Paladin_OT_ExportSetItemAdd(bpy.types.Operator):
 
     def execute(self, context):
         collection = context.collection
-        export_data = context.scene.exporter
-        set = export_data.sets[self.set_index]
+        set = context.scene.exporter.sets[self.set_index]
         
         for item in set.items:
-            if item.item_name == collection.name:
+            if item.name == collection.name:
                 self.report({'WARNING'}, f"Collection '{collection.name}' already in set {self.set_index + 1}.")
                 return {'CANCELLED'}
         
         item = set.items.add()
-        item.item_name = collection.name
+        item.name = collection.name
         set.items_index = len(set.items)-1
         return{'FINISHED'}
 
@@ -68,8 +65,7 @@ class Paladin_OT_ExportSetItemRemove(bpy.types.Operator):
     set_index:IntProperty(name="Set Index", default=0)
 
     def execute(self, context):
-        export_data = context.scene.exporter
-        set = export_data.sets[self.set_index]
+        set = context.scene.exporter.sets[self.set_index]
         items = set.items
 
         items.remove(set.items_index)
@@ -95,8 +91,7 @@ class Paladin_OT_ExportSetItemMove(bpy.types.Operator):
         return "Move Export Set Collection up or down"
     
     def execute(self, context):
-        export_data = context.scene.exporter
-        set = export_data.sets[self.set_index]
+        set = context.scene.exporter.sets[self.set_index]
         items = set.items
         index = set.items_index
 

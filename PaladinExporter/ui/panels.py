@@ -11,8 +11,7 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
     bl_category = "Paladin Studios"
 
     def draw(self, context):
-        export_data = context.scene.exporter
-        sets = export_data.sets
+        sets = context.scene.exporter.sets
 
         export_icon = get_icon('icon_export')
         export_selection_icon = get_icon('export_selection')
@@ -41,18 +40,18 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         col = layout.column(align=True)
         row = col.row(align=False)
         
-        row.prop(set, "set_include", text="")
-        row.prop(set,'set_preset', text="", emboss=True)
+        row.prop(set, "include", text="")
+        row.prop(set,'preset', text="", emboss=True)
         row.operator(op_export_sets.Paladin_OT_ExportSetRemove.bl_idname, icon='TRASH', text="", emboss=False).index=index
 
         col = layout.column(align=True)
         col.use_property_split = True
 
         row = col.row(align=True)
-        row.prop(set, "set_path", text="Path")
+        row.prop(set, "path", text="Path")
         row = col.row(align=True)
-        row.prop(set, "set_prefix", text="Affixes")
-        row.prop(set, "set_suffix", text="")
+        row.prop(set, "prefix", text="Affixes")
+        row.prop(set, "suffix", text="")
 
         layout.use_property_split = False
         rows = 2
