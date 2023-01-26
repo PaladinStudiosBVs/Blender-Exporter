@@ -87,6 +87,7 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                         for obj in export_objects_collection:
                             obj.select_set(True)
                             context.view_layer.objects.active = obj
+                            bpy.ops.object.mode_set(mode='OBJECT')
                         export_fbx(self, export_path)
                 
                 # With export selected:
@@ -99,7 +100,7 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                                 continue
                             export_objects.append(obj)
                         # Selecting selected parent objects:
-                        if obj.parent == None and obj.type in object_types and obj.select_get() == True and obj.visible_get() == True :
+                        if obj.parent == None and obj.type in object_types and obj.select_get() == True and obj.visible_get() == True:
                             export_objects.append(obj)
                             continue
 
@@ -110,7 +111,7 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                             export_objects.append(obj)
                         continue
                 
-                # Exporting if use collection as object is disabled:          
+                # Exporting if use collection as object is disabled and if there are objects to export:          
                 if export_item.use_collection == False and len(export_objects) > 0:
                     for obj in export_objects:
                         filename = (prefix)+(obj.name)+(suffix)+".fbx"
@@ -150,7 +151,6 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
             context.view_layer.objects.active = old_active
             if not old_active == None:
                 bpy.ops.object.mode_set(mode=old_mode)
-
         return {'FINISHED'}
 
 classes = (Paladin_OT_ExportFbx,)
