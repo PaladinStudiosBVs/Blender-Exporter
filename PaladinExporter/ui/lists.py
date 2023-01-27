@@ -6,6 +6,8 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
         include = item.include
         icon_path = get_icon('custom_path')
+        collection_false = get_icon('collection_false')
+        collection_true = get_icon('collection_true')
         
         row = layout.row(align=True)
 
@@ -14,8 +16,11 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
             row.label(text=f"Missing Collection: '{item.name}'", icon='ERROR')
             return
 
-        row.prop(item, 'include')
-      
+        if include:
+            row.prop(item, 'include', icon_only=True, icon='CHECKBOX_HLT', emboss=False)
+        else:
+            row.prop(item, 'include', icon_only=True, icon='CHECKBOX_DEHLT', emboss=False)
+
         if item.use_path:
             split = row.split(factor=0.35)
             col_cell = split.column()
@@ -30,12 +35,20 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
 
         if item.use_path:
             row.prop(item, 'use_path', icon_only=True, icon='PANEL_CLOSE', emboss=False)
-            row.prop(item, 'use_origin', icon_only=True, icon='OBJECT_ORIGIN', emboss=True)
-            row.prop(item, 'use_collection', icon_only=True, icon='OUTLINER_COLLECTION', emboss=True)
-        else: 
-            row.prop(item, 'use_path', icon_only=True, icon_value=icon_path, emboss=True)
-            row.prop(item, 'use_origin', icon_only=True, icon='OBJECT_ORIGIN', emboss=True)
-            row.prop(item, 'use_collection', icon_only=True, icon='OUTLINER_COLLECTION', emboss=True)
+        else:
+            row.prop(item, 'use_path', icon_only=True, icon_value=icon_path, emboss=False)
+        
+        if item.use_origin:
+            row.prop(item, 'use_origin', icon_only=True, icon='LOCKED', emboss=False)
+        else:
+            row.prop(item, 'use_origin', icon_only=True, icon='UNLOCKED', emboss=False)
+        
+        if item.use_collection:
+            row.prop(item, 'use_collection', icon_only=True, icon_value=collection_true, emboss=False)
+        else:
+            row.prop(item, 'use_collection', icon_only=True, icon_value=collection_false, emboss=False)
+
+        
             
 classes = (VIEW3D_UL_ExportList,)
 
