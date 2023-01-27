@@ -1,14 +1,9 @@
 import bpy, os, sys, json
 from bpy.props import BoolProperty
 from ..utilities.general import preset_path_get, is_collection_valid, has_export_sets, has_sets_include
-from ..utilities.general import included_sets_has_item, get_event_modifiers, get_export_path
+from ..utilities.general import included_sets_has_item, get_event_modifiers, get_export_path, exportable, exportable_selected, exportable_selected_nested
 from ..utilities.exporters import export_fbx
 from ..data.items import keys
-
-def exportable_object(obj):
-    object_types = ('MESH','EMPTY','ARMATURE')
-    return obj.parent == None and obj.type in object_types and obj.visible_get() == True
-
 
 class Paladin_OT_ExportFbx(bpy.types.Operator):
     bl_idname = "paladin.exportfbx"
@@ -48,16 +43,16 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
         return self.execute(context)
 
     def execute(self, context):
-        object_types = ('MESH','EMPTY','ARMATURE')
+        
         export_sets = context.scene.exporter.sets
         preset_path = preset_path_get()
         old_selected = context.selected_objects
-        old_active = context.view_layer.objects.active if len(old_selected) > 0 else None
+        old_active = context.view_layer.objects.active if old_selected else None
         old_mode = context.object.mode if old_active else None
         exported_objects = []
         
         for export_set in export_sets:
-            if export_set.include == False:
+            if not export_set.include:
                 continue
             self.settings = json.load(open(os.path.join(preset_path, export_set.preset), 'r'))
             prefix = export_set.prefix
@@ -65,86 +60,68 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
             
             for export_item in export_set.items:
                 item_name = export_item.name
-                if export_item.include == False:
+                if not export_item.include:
                     continue
                 if not is_collection_valid(item_name):
                     continue
                 
-                collection = bpy.data.collections[item_name]
-                v_collection = bpy.context.view_layer.layer_collection.children[item_name]
+                coll = bpy.data.collections[item_name]
+                v_coll = bpy.context.view_layer.layer_collection.children[item_name]
+                coll_objects = coll.objects
                 is_export_selected = (self.alt or self.export_selected)
-                is_export_selected_valid = any(obj.select_get() for obj in collection.objects)
+                is_export_selected_valid = any(obj.select_get() for obj in coll.objects)
                 export_objects = []
                 
                 # With export item use collection:
                 if export_item.use_collection:
-                    if collection.hide_viewport or v_collection.exclude:
+                    if coll.hide_viewport or v_coll.exclude:
                         continue
                     if is_export_selected:
                         if is_export_selected_valid:
-                            for obj in collection.objects:
-                                if obj.parent == None and obj.type in object_types and obj.visible_get() == True:
-                                    export_objects.append(obj)       
+                            export_objects = [obj for obj in coll_objects if exportable(obj)]
                     else:
-                        for obj in collection.objects:
-                            if obj.parent == None and obj.type in object_types and obj.visible_get() == True:
-                                export_objects.append(obj)
-                    
-                    if len(export_objects) > 0:
+                        export_objects = [obj for obj in coll_objects if exportable(obj)]
+                    # Exporting:
+                    if export_objects:
                         filename = (prefix)+(item_name)+(suffix)+".fbx"
                         export_path = get_export_path(export_set, export_item, filename)
                         exported_objects.append(filename) 
-                        
+                        [obj.select_set(True) for obj in export_objects]
+                        context.view_layer.objects.active = export_objects[0]
+                        bpy.ops.object.mode_set(mode='OBJECT')
+                        export_fbx(self, export_path)
+                else:
+                    if is_export_selected:
+                        if is_export_selected_valid:
+                            export_objects_nested = set(obj.parent for obj in coll_objects if exportable_selected_nested(obj))
+                            export_objects = set(obj for obj in coll_objects if exportable_selected(obj))
+                            export_objects = export_objects.union(export_objects_nested)    
+                    else:
+                        export_objects = [obj for obj in coll_objects if exportable(obj)]                             
+                    # Exporting:
+                    if export_objects:
                         for obj in export_objects:
+                            filename = (prefix)+(obj.name)+(suffix)+".fbx"
+                            export_path = get_export_path(export_set, export_item, filename)
+                            exported_objects.append(filename)
+                            bpy.ops.object.mode_set(mode='OBJECT')
+                            bpy.ops.object.select_all(action='DESELECT')
                             obj.select_set(True)
                             context.view_layer.objects.active = obj
-                            bpy.ops.object.mode_set(mode='OBJECT')
-                        export_fbx(self, export_path)
-                
-                # With export selected:
-                if is_export_selected and not export_item.use_collection:
-                    if is_export_selected_valid:
-                        for obj in collection.objects:
-                            # Selecting parent if selected object is nested:
-                            if not obj.parent == None and obj.type in object_types and obj.select_get() == True and obj.parent.visible_get() == True:
-                                obj = obj.parent
-                                if obj in export_objects:
-                                    continue
-                                export_objects.append(obj)
-                            # Selecting selected parent objects:
-                            if obj.parent == None and obj.type in object_types and obj.select_get() == True and obj.visible_get() == True:
-                                export_objects.append(obj)
-                                continue
-
-                # Default export behavior:
-                else:                    
-                    for obj in collection.objects:
-                        if obj.parent == None and obj.type in object_types and obj.visible_get() == True:
-                            export_objects.append(obj)
-                        continue
-                
-                # Exporting if use collection as object is disabled and if there are objects to export:          
-                if not export_item.use_collection and len(export_objects) > 0:
-                    for obj in export_objects:
-                        filename = (prefix)+(obj.name)+(suffix)+".fbx"
-                        export_path = get_export_path(export_set, export_item, filename)
-                        exported_objects.append(filename)
-
-                        bpy.ops.object.mode_set(mode='OBJECT')
-                        bpy.ops.object.select_all(action='DESELECT')
-                        obj.select_set(True)
-                        context.view_layer.objects.active = obj
-                        old_location = obj.location.copy()
-                        if not export_item.use_origin:
-                            obj.location = (0,0,0)
-                        export_fbx(self, export_path)
-                        obj.location = old_location
+                            old_location = obj.location.copy()
+                            if not export_item.use_origin:
+                                obj.location = (0,0,0)
+                            export_fbx(self, export_path)
+                            obj.location = old_location
                         
-                # Selecting old object(s) to be able to check for selected objects next loop:
-                if len(old_selected) > 0:
-                    bpy.ops.object.select_all(action='DESELECT')
-                    for obj in old_selected:
-                        obj.select_set(True)
+                # Selecting to check for selected objects next loop:
+                # Resetting selected/active objects and mode:
+                bpy.ops.object.select_all(action='DESELECT')
+                if old_selected:
+                    [obj.select_set(True) for obj in old_selected]
+                    context.view_layer.objects.active = old_active
+                    if old_active:
+                        bpy.ops.object.mode_set(mode=old_mode)
         
         # Reporting number of exported objects:
         length = len(exported_objects)
@@ -155,14 +132,7 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
         else:
             self.report({'INFO'},f"{length} objects were exported")
 
-        # Resetting selected/active objects and mode:
-        bpy.ops.object.select_all(action='DESELECT')
-        if len(old_selected) > 0:
-            for obj in old_selected:
-                obj.select_set(True)
-            context.view_layer.objects.active = old_active
-            if not old_active == None:
-                bpy.ops.object.mode_set(mode=old_mode)
+        
         return {'FINISHED'}
 
 classes = (Paladin_OT_ExportFbx,)

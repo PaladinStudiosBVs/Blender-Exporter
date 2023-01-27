@@ -69,7 +69,17 @@ def get_export_path(export_set, export_item, filename):
     elif not export_set.path == "":
         export_path = os.path.join(export_set.path, filename)
     return export_path
-            
+
+object_types = ('MESH','EMPTY','ARMATURE')
+
+def exportable(obj):
+    return obj.parent == None and obj.type in object_types and obj.visible_get()
+
+def exportable_selected(obj):
+    return obj.parent == None and obj.type in object_types and obj.select_get() and obj.visible_get()
+
+def exportable_selected_nested(obj):
+    return obj.parent and obj.type in object_types and obj.select_get() and obj.parent.visible_get()
     
     
 
