@@ -71,14 +71,27 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                 export_objects = []
                 
                 # With export item use collection:
-                if export_item.use_collection == True:
+                if export_item.use_collection:
                     v_collection = bpy.context.view_layer.layer_collection.children[item_name]
                     export_objects_collection = []
                     if collection.hide_viewport or v_collection.exclude:
                         continue
-                    for obj in collection.objects:
-                        if obj.parent == None and obj.type in object_types and obj.visible_get() == True:
-                            export_objects_collection.append(obj)
+                    if self.export_selected:
+                        # Checking if any object is selected:
+                        object_selected = False
+                        for obj in collection.objects:
+                            if obj.select_get() == True:
+                                object_selected = True
+                                break
+                        # If any object is selected, collection will be exporter like regular
+                        if object_selected:
+                            for obj in collection.objects:
+                                if obj.parent == None and obj.type in object_types and obj.visible_get() == True:
+                                    export_objects_collection.append(obj)       
+                    else:
+                        for obj in collection.objects:
+                            if obj.parent == None and obj.type in object_types and obj.visible_get() == True:
+                                export_objects_collection.append(obj)
                     if len(export_objects_collection) > 0:
                         filename = (prefix)+(item_name)+(suffix)+".fbx"
                         export_path = get_export_path(export_set, export_item, filename)
@@ -91,7 +104,7 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                         export_fbx(self, export_path)
                 
                 # With export selected:
-                if self.export_selected == True or self.alt:
+                if self.export_selected or self.alt and not export_item.use_collection:
                     for obj in collection.objects:
                         # Selecting parent if selected object is nested:
                         if not obj.parent == None and obj.type in object_types and obj.select_get() == True and obj.parent.visible_get() == True:
@@ -112,7 +125,7 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                         continue
                 
                 # Exporting if use collection as object is disabled and if there are objects to export:          
-                if export_item.use_collection == False and len(export_objects) > 0:
+                if not export_item.use_collection and len(export_objects) > 0:
                     for obj in export_objects:
                         filename = (prefix)+(obj.name)+(suffix)+".fbx"
                         export_path = get_export_path(export_set, export_item, filename)

@@ -6,7 +6,7 @@ from ..utilities.general import preset_items_get
 class ExportItemProperties(PropertyGroup):
     include: BoolProperty(name="", description="Enable, to include when exporting", default=True)
     use_path: BoolProperty(name="Custom Path", description="Use a custom path, Click 'X' to disable", default=False)
-    use_origin: BoolProperty(name="Lock Position", description="When locked, objects maintain local position", default=False)
+    use_origin: BoolProperty(name="Lock Position", description="When locked, objects maintain position during export", default=False)
     use_collection: BoolProperty(name="Collection is Object", description="Enable, so the collection is the exported object", default=False)
     path: StringProperty(name="Path", subtype='DIR_PATH', description="Custom export path for this collection")
     name: StringProperty()

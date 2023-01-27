@@ -26,7 +26,7 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         col = row.row(align=True)
         
         col.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Export', icon_value=export_icon).export_selected = False
-        col.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Export Selection', icon_value=export_selection_icon).export_selected = True
+        col.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Selected', icon_value=export_selection_icon).export_selected = True
         
         for i, set in enumerate(sets):
             self.draw_set(set, i, remove_set)
