@@ -15,7 +15,7 @@ class Paladin_OT_ExportSetAdd(bpy.types.Operator):
 class Paladin_OT_ExportSetRemove(bpy.types.Operator):
     bl_idname = "paladin.export_set_remove"
     bl_label = "Remove Set"
-    bl_description = "Removes an export set"
+    bl_description = "Delete this 'Export Set'"
     bl_options = {'UNDO'}
 
     index:IntProperty(name="set_index", default=0)

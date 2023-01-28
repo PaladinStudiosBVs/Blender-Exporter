@@ -64,7 +64,7 @@ def get_event_modifiers(event):
 
 def get_export_path(export_set, export_item, filename):
     export_path = os.path.join(os.path.dirname(bpy.data.filepath), filename)
-    if export_item.use_path and not export_item.path == "":
+    if not export_item.path == "":
         export_path = os.path.join(export_item.path, filename)
     elif not export_set.path == "":
         export_path = os.path.join(export_set.path, filename)

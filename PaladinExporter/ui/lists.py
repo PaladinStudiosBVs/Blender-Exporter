@@ -32,11 +32,13 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
             col_cell = row.column()
             col_cell.enabled = include
             col_cell.label(text=item.name)
-
+        
         if item.use_path:
-            row.prop(item, 'use_path', icon_only=True, icon='PANEL_CLOSE', emboss=False)
+            row.prop(item, 'use_path', icon_only=True, icon='RIGHTARROW_THIN', emboss=False)
         else:
             row.prop(item, 'use_path', icon_only=True, icon_value=icon_path, emboss=False)
+        
+        #row.prop(item, 'use_path', icon_only=True, icon_value=icon_path, emboss=False)
         
         if item.use_origin:
             row.prop(item, 'use_origin', icon_only=True, icon='LOCKED', emboss=False)

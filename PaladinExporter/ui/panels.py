@@ -12,12 +12,14 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
 
     def draw(self, context):
         sets = context.scene.exporter.sets
-
+        path_false = get_icon('custom_path')
+        path_true = get_icon('custom_path_true')
+        affix_true = get_icon('affix_true')
+        affix_false = get_icon('affix_false')
         export_icon = get_icon('icon_export')
         export_selection_icon = get_icon('export_selection')
         remove_set = get_icon('remove_set')
         
-
         layout = self.layout
         layout.use_property_decorate = False
 
@@ -27,14 +29,16 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         
         col.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Export', icon_value=export_icon).export_selected = False
         col.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Selected', icon_value=export_selection_icon).export_selected = True
-        
+
         for i, set in enumerate(sets):
-            self.draw_set(set, i, remove_set)
+            self.draw_set(set, i, remove_set, path_true, path_false, affix_true, affix_false)
 
         box = self.layout.box()
         box.operator(op_export_sets.Paladin_OT_ExportSetAdd.bl_idname, icon='ADD', text="", emboss=False)
 
-    def draw_set(self, set, index, remove_set):
+        
+
+    def draw_set(self, set, index, remove_set, path_false, path_true, affix_true, affix_false):
         items = set.items
         include = set.include
         layout = self.layout.box()
@@ -43,7 +47,7 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         row = layout.row(align=True)
         row.prop(set, "include", text="")
         
-        split = row.split(factor=0.385, align=True)
+        split = row.split(factor=0.25, align=True)
         
         name_cell = split.column()
         name_cell. enabled = include
@@ -51,19 +55,32 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
 
         preset_cell = split.column()
         preset_cell.prop(set,'preset', text="", emboss=True)
+        
+        if set.has_path:
+            row.prop(set, "has_path", icon_only=True, icon_value=path_false, emboss=False)
+        else:
+            row.prop(set, "has_path", icon_only=True, icon_value=path_true, emboss=False) 
+        
+        if set.has_affixes:
+            row.prop(set, "has_affixes", icon_only=True, icon_value=affix_true, emboss=False)
+        else:
+            row.prop(set, "has_affixes", icon_only=True, icon_value=affix_false, emboss=False)
+
         row.operator(op_export_sets.Paladin_OT_ExportSetRemove.bl_idname, icon_value=remove_set, text="", emboss=False).index=index
 
         col = layout.column(align=True)
         col.use_property_split = True
 
-        row = col.row(align=True)
-        row.prop(set, "path", text="Path")
-        row = col.row(align=True)
-        row.prop(set, "prefix", text="Affixes")
-        row.prop(set, "suffix", text="")
+        if set.has_path:
+            row = col.row(align=True)
+            row.prop(set, "path", text="Path")
+        if set.has_affixes:
+            row = col.row(align=True)
+            row.prop(set, "prefix", text="Affixes")
+            row.prop(set, "suffix", text="")
 
         layout.use_property_split = False
-        rows = 2
+        rows = 1
         if len(items) >= 2:
             rows = 3
 
