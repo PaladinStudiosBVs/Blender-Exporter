@@ -1,4 +1,4 @@
-import bpy, os, json
+import bpy
 
 from ..operators import op_export_fbx, op_export_sets
 from ..utilities.icons import get_icon
@@ -36,8 +36,6 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         box = self.layout.box()
         box.operator(op_export_sets.Paladin_OT_ExportSetAdd.bl_idname, icon='ADD', text="", emboss=False)
 
-        
-
     def draw_set(self, set, index, remove_set, path_false, path_true, affix_true, affix_false):
         items = set.items
         include = set.include
@@ -46,13 +44,10 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
 
         row = layout.row(align=True)
         row.prop(set, "include", text="")
-        
         split = row.split(factor=0.25, align=True)
-        
         name_cell = split.column()
         name_cell. enabled = include
         name_cell.label(text=f"Set {index+1}")
-
         preset_cell = split.column()
         preset_cell.prop(set,'preset', text="", emboss=True)
         
@@ -102,8 +97,7 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
             op = col.operator(op_export_sets.Paladin_OT_ExportSetItemMove.bl_idname, text="", icon="TRIA_DOWN", emboss=False)
             op.direction = "DOWN"
             op.set_index = index
-            
-        
+                
 classes = (VIEW3D_PT_Paladin_Exporter,)
 
 register, unregister = bpy.utils.register_classes_factory(classes)
