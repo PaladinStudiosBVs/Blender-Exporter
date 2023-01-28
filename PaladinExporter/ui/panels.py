@@ -36,21 +36,22 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
 
     def draw_set(self, set, index, remove_set):
         items = set.items
+        include = set.include
         layout = self.layout.box()
         layout.use_property_decorate = False
 
-        col = layout.column(align=True)
-        col.scale_y = 1.0
-        row = col.row(align=True)
-        
+        row = layout.row(align=True)
         row.prop(set, "include", text="")
-        row.prop(set,'preset', text="", emboss=True)
-        row.operator(op_export_sets.Paladin_OT_ExportSetRemove.bl_idname, 
-            icon_value=remove_set,
-            #icon = 'TRASH', 
-            text="", 
-            emboss=False
-            ).index=index
+        
+        split = row.split(factor=0.385, align=True)
+        
+        name_cell = split.column()
+        name_cell. enabled = include
+        name_cell.label(text=f"Set {index+1}")
+
+        preset_cell = split.column()
+        preset_cell.prop(set,'preset', text="", emboss=True)
+        row.operator(op_export_sets.Paladin_OT_ExportSetRemove.bl_idname, icon_value=remove_set, text="", emboss=False).index=index
 
         col = layout.column(align=True)
         col.use_property_split = True
