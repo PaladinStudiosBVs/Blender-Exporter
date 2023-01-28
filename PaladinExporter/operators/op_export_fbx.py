@@ -43,7 +43,6 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
         return self.execute(context)
 
     def execute(self, context):
-        
         export_sets = context.scene.exporter.sets
         preset_path = preset_path_get()
         old_selected = context.selected_objects
@@ -51,9 +50,11 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
         old_mode = context.object.mode if old_active else None
         exported_objects = []
         
-        for export_set in export_sets:
+        for i, export_set in enumerate(export_sets):
             if not export_set.include:
+                self.report({'INFO'},(f"Skipped 'Export Set {i+1}'\n"))
                 continue
+            self.report({'INFO'},(f"Exported 'Export Set {i+1}'\n"))
             self.settings = json.load(open(os.path.join(preset_path, export_set.preset), 'r'))
             prefix = export_set.prefix
             suffix = export_set.suffix
@@ -85,11 +86,15 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                     if export_objects:
                         filename = (prefix)+(item_name)+(suffix)+".fbx"
                         export_path = get_export_path(export_set, export_item, filename)
-                        exported_objects.append(filename) 
-                        [obj.select_set(True) for obj in export_objects]
-                        context.view_layer.objects.active = export_objects[0]
+                        exported_objects.append(filename)
                         bpy.ops.object.mode_set(mode='OBJECT')
+                        bpy.ops.object.select_all(action='DESELECT')
+                        for obj in export_objects:
+                            obj.select_set(True)
+                            context.view_layer.objects.active = obj
+                            bpy.ops.object.select_grouped(extend=True, type='CHILDREN_RECURSIVE')
                         export_fbx(self, export_path)
+                        self.report({'INFO'},f"Exported {prefix}{item_name}{suffix}")
                 else:
                     if is_export_selected:
                         if is_export_selected_valid:
@@ -108,20 +113,21 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                             bpy.ops.object.select_all(action='DESELECT')
                             obj.select_set(True)
                             context.view_layer.objects.active = obj
+                            bpy.ops.object.select_grouped(extend=True, type='CHILDREN_RECURSIVE')
                             old_location = obj.location.copy()
                             if not export_item.use_origin:
                                 obj.location = (0,0,0)
                             export_fbx(self, export_path)
+                            self.report({'INFO'},f"Exported '{prefix}{obj.name}{suffix}'")
                             obj.location = old_location
                         
                 # Selecting to check for selected objects next loop:
-                # Resetting selected/active objects and mode:
-                bpy.ops.object.select_all(action='DESELECT')
-                if old_selected:
+                if old_active:
+                    bpy.ops.object.mode_set(mode='OBJECT')
+                    bpy.ops.object.select_all(action='DESELECT')
                     [obj.select_set(True) for obj in old_selected]
                     context.view_layer.objects.active = old_active
-                    if old_active:
-                        bpy.ops.object.mode_set(mode=old_mode)
+                    bpy.ops.object.mode_set(mode=old_mode)
         
         # Reporting number of exported objects:
         length = len(exported_objects)
@@ -132,7 +138,6 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
         else:
             self.report({'INFO'},f"{length} objects were exported")
 
-        
         return {'FINISHED'}
 
 classes = (Paladin_OT_ExportFbx,)
