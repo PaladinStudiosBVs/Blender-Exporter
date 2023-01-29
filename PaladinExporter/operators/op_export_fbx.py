@@ -46,7 +46,7 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
         export_sets = context.scene.exporter.sets
         preset_path = preset_path_get()
         old_selected = context.selected_objects
-        old_active = context.view_layer.objects.active if old_selected else None
+        old_active = context.view_layer.objects.active if old_selected and context.view_layer.objects.active else None
         old_mode = context.object.mode if old_active else None
         exported_objects = []
         
@@ -87,7 +87,8 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                         filename = (prefix)+(item_name)+(suffix)+".fbx"
                         export_path = get_export_path(export_set, export_item, filename)
                         exported_objects.append(filename)
-                        bpy.ops.object.mode_set(mode='OBJECT')
+                        if old_active:
+                            bpy.ops.object.mode_set(mode='OBJECT')
                         bpy.ops.object.select_all(action='DESELECT')
                         for obj in export_objects:
                             obj.select_set(True)
@@ -109,7 +110,8 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                             filename = (prefix)+(obj.name)+(suffix)+".fbx"
                             export_path = get_export_path(export_set, export_item, filename)
                             exported_objects.append(filename)
-                            bpy.ops.object.mode_set(mode='OBJECT')
+                            if old_active:
+                                bpy.ops.object.mode_set(mode='OBJECT')
                             bpy.ops.object.select_all(action='DESELECT')
                             obj.select_set(True)
                             context.view_layer.objects.active = obj
