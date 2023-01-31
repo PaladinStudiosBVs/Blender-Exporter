@@ -59,8 +59,6 @@ class Paladin_OT_ExportSetItemAdd(bpy.types.Operator):
             if item.name == collection.name:
                 self.report({'WARNING'}, f"Collection '{collection.name}' already in set {self.set_index + 1}.")
                 return {'CANCELLED'}
-        #if collection.name == 'Scene Collection':
-           # self.report({'WARNING'}, f"Collection '{collection.name}' already in set {self.set_index + 1}.")
         
         item = set.items.add()
         item.name = collection.name
@@ -84,18 +82,13 @@ class Paladin_OT_ExportSetItemRemove(bpy.types.Operator):
         set.items_index = min(max(0, set.items_index - 1), len(items) - 1)
         return{'FINISHED'}
 
-
 class Paladin_OT_ExportSetItemMove(bpy.types.Operator):
     bl_idname = "paladin.export_set_item_move"
     bl_label = "Move"
     bl_options = {'UNDO'}
 
     set_index:IntProperty(name="Set Index", default=0)
-    direction: EnumProperty(
-        items=[
-            ('UP', 'Up',""),
-            ('DOWN', 'Down',"")]
-            )
+    direction: EnumProperty(items=[('UP', 'Up',""),('DOWN', 'Down',"")])
 
     @classmethod
     def description(cls, context, event):        
