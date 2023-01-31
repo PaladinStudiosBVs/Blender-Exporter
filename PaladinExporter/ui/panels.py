@@ -1,4 +1,4 @@
-import bpy, os, json
+import bpy
 
 from ..operators import op_export_fbx, op_export_sets
 from ..utilities.icons import get_icon
@@ -11,12 +11,15 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
     bl_category = "Paladin Studios"
 
     def draw(self, context):
-        export_data = context.scene.exporter
-        sets = export_data.sets
-
+        sets = context.scene.exporter.sets
+        path_false = get_icon('custom_path')
+        path_true = get_icon('custom_path_true')
+        affix_true = get_icon('affix_true')
+        affix_false = get_icon('affix_false')
         export_icon = get_icon('icon_export')
         export_selection_icon = get_icon('export_selection')
-
+        remove_set = get_icon('remove_set')
+        
         layout = self.layout
         layout.use_property_decorate = False
 
@@ -25,60 +28,76 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         col = row.row(align=True)
         
         col.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Export', icon_value=export_icon).export_selected = False
-        col.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Export Selection', icon_value=export_selection_icon).export_selected = True
-        
+        col.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Selected', icon_value=export_selection_icon).export_selected = True
+
         for i, set in enumerate(sets):
-            self.draw_set(set, i)
+            self.draw_set(set, i, remove_set, path_true, path_false, affix_true, affix_false)
 
         box = self.layout.box()
         box.operator(op_export_sets.Paladin_OT_ExportSetAdd.bl_idname, icon='ADD', text="", emboss=False)
 
-    def draw_set(self, set, index):
+    def draw_set(self, set, index, remove_set, path_false, path_true, affix_true, affix_false):
         items = set.items
+        include = set.include
         layout = self.layout.box()
         layout.use_property_decorate = False
 
-        col = layout.column(align=True)
-        row = col.row(align=False)
+        row = layout.row(align=True)
+        row.prop(set, "include", text="")
+        split = row.split(factor=0.25, align=True)
+        name_cell = split.column()
+        name_cell. enabled = include
+        name_cell.label(text=f"Set {index+1}")
+        preset_cell = split.column()
+        preset_cell.prop(set,'preset', text="", emboss=True)
         
-        row.prop(set, "set_include", text="")
-        row.prop(set,'set_preset', text="", emboss=True)
-        row.operator(op_export_sets.Paladin_OT_ExportSetRemove.bl_idname, icon='TRASH', text="", emboss=False).index=index
+        if set.has_path:
+            row.prop(set, "has_path", icon_only=True, icon_value=path_false, emboss=False)
+        else:
+            row.prop(set, "has_path", icon_only=True, icon_value=path_true, emboss=False) 
+        
+        if set.has_affixes:
+            row.prop(set, "has_affixes", icon_only=True, icon_value=affix_true, emboss=False)
+        else:
+            row.prop(set, "has_affixes", icon_only=True, icon_value=affix_false, emboss=False)
+
+        row.operator(op_export_sets.Paladin_OT_ExportSetRemove.bl_idname, icon_value=remove_set, text="", emboss=False).index=index
 
         col = layout.column(align=True)
         col.use_property_split = True
 
-        row = col.row(align=True)
-        row.prop(set, "set_path", text="Path")
-        row = col.row(align=True)
-        row.prop(set, "set_prefix", text="Affixes")
-        row.prop(set, "set_suffix", text="")
+        if set.has_path:
+            row = col.row(align=True)
+            row.prop(set, "path", text="Path")
+        if set.has_affixes:
+            row = col.row(align=True)
+            row.prop(set, "prefix", text="Affixes")
+            row.prop(set, "suffix", text="")
 
         layout.use_property_split = False
-        rows = 2
+        rows = 1
         if len(items) >= 2:
             rows = 3
 
-        row = layout.row()
+        row = layout.row(align=True)
         row.use_property_split = False
         row.template_list("VIEW3D_UL_ExportList", f"Export Set {index}", set, "items", set, "items_index", rows=rows)
         
         col = row.column(align=True)
-        col.operator(op_export_sets.Paladin_OT_ExportSetItemAdd.bl_idname, icon='ADD', text="").set_index=index
+        col.operator(op_export_sets.Paladin_OT_ExportSetItemAdd.bl_idname, icon='ADD', text="", emboss=False).set_index=index
         
         row = col.row(align=True)
         if len(items) < 1:
             row.enabled = False
-        row.operator(op_export_sets.Paladin_OT_ExportSetItemRemove.bl_idname, icon='REMOVE', text="").set_index=index
+        row.operator(op_export_sets.Paladin_OT_ExportSetItemRemove.bl_idname, icon='REMOVE', text="", emboss=False).set_index=index
         if len(items) > 1:
-            op = col.operator(op_export_sets.Paladin_OT_ExportSetItemMove.bl_idname, text="", icon="TRIA_UP")
+            op = col.operator(op_export_sets.Paladin_OT_ExportSetItemMove.bl_idname, text="", icon="TRIA_UP", emboss=False)
             op.direction = "UP"
             op.set_index = index
-            op = col.operator(op_export_sets.Paladin_OT_ExportSetItemMove.bl_idname, text="", icon="TRIA_DOWN")
+            op = col.operator(op_export_sets.Paladin_OT_ExportSetItemMove.bl_idname, text="", icon="TRIA_DOWN", emboss=False)
             op.direction = "DOWN"
             op.set_index = index
-            
-        
+                
 classes = (VIEW3D_PT_Paladin_Exporter,)
 
 register, unregister = bpy.utils.register_classes_factory(classes)

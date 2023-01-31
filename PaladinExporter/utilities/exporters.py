@@ -8,7 +8,8 @@ def export_fbx(self, export_path):
             use_selection=True,
             use_active_collection=False,
         # Include
-            use_visible=(self.settings["use_visible"]),
+            #'use_visible' not supported by blender 3.1, needs condition:
+            #use_visible=(self.settings["use_visible"]),
             object_types= set(self.settings["object_types"]),
             use_custom_props=(self.settings["use_custom_props"]),
         # Transform
@@ -24,9 +25,10 @@ def export_fbx(self, export_path):
             use_subsurf=(self.settings["use_subsurf"]),
             use_mesh_modifiers=(self.settings["use_mesh_modifiers"]),
             use_mesh_edges=(self.settings["use_mesh_edges"]),
-            use_triangles=(self.settings["use_triangles"]),
+            #'use Triangles' not supported by blender 3.1, needs condition:
+            #use_triangles=(self.settings["use_triangles"]),
             use_tspace=(self.settings["use_tspace"]),
-            # Breaks exporter in blender before 3.4, needs condition:
+            #'colors_type' not supported before Blender 3.4, needs condition:
             #colors_type=(self.settings["colors_type"]),
         # Armature
             primary_bone_axis=(self.settings["primary_bone_axis"]),

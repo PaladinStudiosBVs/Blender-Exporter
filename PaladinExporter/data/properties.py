@@ -3,36 +3,33 @@ from bpy.utils import register_classes_factory
 from bpy.types import PropertyGroup
 from ..utilities.general import preset_items_get
 
-#preset_items = []
+class ExportItemProperties(PropertyGroup):
+    include: BoolProperty(name="", description="Enable, to include when exporting", default=True)
+    use_path: BoolProperty(name="Show Path", description="Show or hide 'Export Item Path'", default=False)
+    use_origin: BoolProperty(name="Lock Position", description="If locked, objects will not be moved to world '0.0.0'", default=False)
+    use_collection: BoolProperty(name="Collection is Object", description="Enable, so the collection is the exported object", default=False)
+    path: StringProperty(name="Path", subtype='DIR_PATH', description="Custom export path for this collection")
+    name: StringProperty()
 
-class ItemCollectionProperties(PropertyGroup):
-    #reset_origin: BoolProperty(name="Reset Origin", description="Enable, to place the object at the world origin when exporting", default=True)
-    item_include: BoolProperty(name="", description="Enable, to include when exporting", default=True)
-    item_use_path: BoolProperty(name="Custom Path", description="Use a custom path, Click 'X' to disable", default=False)
-    item_use_origin: BoolProperty(name="Relative Position", description="Enable, to have objects retain their relative position", default=False)
-    item_path: StringProperty(name="Path", subtype='DIR_PATH', description="Custom export path for this collection")
-    item_name: StringProperty()
-
-class ExportSetCollectionProperties(PropertyGroup):
-
+class ExportSetProperties(PropertyGroup):
     set_presets_get = preset_items_get()
 
-    set_preset: EnumProperty(name='Set Preset', items=set_presets_get)
-    set_path: StringProperty(name="Export Set Path", subtype='DIR_PATH', description="Export path for this Export Set")
-    set_include: BoolProperty(name="Include Set", description="Enable, to include when exporting", default=True)
-    set_prefix: StringProperty(name="Prefix", default="")
-    set_suffix: StringProperty(name="Suffix", default="")
-
-    items: CollectionProperty(type=ItemCollectionProperties)
+    preset: EnumProperty(name='Set Preset', items=set_presets_get)
+    has_path:BoolProperty(name="Show Path", description="Show or hide 'Export Set Path", default=True)
+    path: StringProperty(name="Export Set Path", subtype='DIR_PATH', description="Export path for this Export Set")
+    include: BoolProperty(name="Include Set", description="Enable, to include when exporting", default=True)
+    has_affixes:BoolProperty(name="Show Affixes", description="Show or hide export set 'Affixes'", default=True )
+    prefix: StringProperty(name="Prefix", default="")
+    suffix: StringProperty(name="Suffix", default="")
+    items: CollectionProperty(type=ExportItemProperties)
     items_index: IntProperty(name="SetItemsIndex", default=0)
 
 class ExporterSceneProperties(PropertyGroup):
 
-    sets: CollectionProperty(type=ExportSetCollectionProperties)
+    sets: CollectionProperty(type=ExportSetProperties)
     sets_index: IntProperty(name="ExportSetIndex", default=0)
 
-
-classes = (ItemCollectionProperties, ExportSetCollectionProperties, ExporterSceneProperties, )
+classes = (ExportItemProperties, ExportSetProperties, ExporterSceneProperties, )
 
 register, unregister = register_classes_factory(classes)
 
