@@ -8,8 +8,7 @@ class Paladin_OT_ExportSetAdd(bpy.types.Operator):
     bl_options = {'UNDO'}
     
     def execute(self, context):
-        export_sets = context.scene.exporter.sets
-        export_sets.add()
+        context.scene.exporter.sets.add()
         return{'FINISHED'}
 
 class Paladin_OT_ExportSetRemove(bpy.types.Operator):
@@ -26,8 +25,7 @@ class Paladin_OT_ExportSetRemove(bpy.types.Operator):
         return export_data.sets
 
     def execute(self, context):
-        sets = context.scene.exporter.sets
-        sets.remove(self.index)
+        context.scene.exporter.sets.remove(self.index)
         return{'FINISHED'}
 
 class Paladin_OT_ExportSetItemAdd(bpy.types.Operator):
@@ -53,16 +51,16 @@ class Paladin_OT_ExportSetItemAdd(bpy.types.Operator):
 
     def execute(self, context):
         collection = context.collection
-        set = context.scene.exporter.sets[self.set_index]
+        export_set = context.scene.exporter.sets[self.set_index]
         
-        for item in set.items:
+        for item in export_set.items:
             if item.name == collection.name:
                 self.report({'WARNING'}, f"Collection '{collection.name}' already in set {self.set_index + 1}.")
                 return {'CANCELLED'}
         
-        item = set.items.add()
+        item = export_set.items.add()
         item.name = collection.name
-        set.items_index = len(set.items)-1
+        export_set.items_index = len(export_set.items)-1
         return{'FINISHED'}
 
 class Paladin_OT_ExportSetItemRemove(bpy.types.Operator):
@@ -74,12 +72,12 @@ class Paladin_OT_ExportSetItemRemove(bpy.types.Operator):
     set_index:IntProperty(name="Set Index", default=0)
 
     def execute(self, context):
-        set = context.scene.exporter.sets[self.set_index]
-        items = set.items
+        export_set = context.scene.exporter.sets[self.set_index]
+        items = export_set.items
 
-        items.remove(set.items_index)
+        items.remove(export_set.items_index)
         # Selects item above index when it is removed:
-        set.items_index = min(max(0, set.items_index - 1), len(items) - 1)
+        export_set.items_index = min(max(0, export_set.items_index - 1), len(items) - 1)
         return{'FINISHED'}
 
 class Paladin_OT_ExportSetItemMove(bpy.types.Operator):
@@ -95,9 +93,9 @@ class Paladin_OT_ExportSetItemMove(bpy.types.Operator):
         return "Move Export Set Collection up or down"
     
     def execute(self, context):
-        set = context.scene.exporter.sets[self.set_index]
-        items = set.items
-        index = set.items_index
+        export_set = context.scene.exporter.sets[self.set_index]
+        items = export_set.items
+        index = export_set.items_index
 
         if self.direction == "UP":
             next_index = max(index -1, 0)
@@ -105,7 +103,7 @@ class Paladin_OT_ExportSetItemMove(bpy.types.Operator):
             next_index = min(index +1, len(items) -1)
             
         items.move(index, next_index)
-        set.items_index = next_index
+        export_set.items_index = next_index
         return{'FINISHED'}
 
 classes = (
