@@ -16,12 +16,8 @@ def preset_items_get():
             json.load(open(os.path.join(preset_path, file)))["description"]) for file in preset_files]
         return items
 
-def is_collection_valid(collection_name):
-    collections = bpy.data.collections
-    for collection in collections:
-        if collection.name == collection_name:
-            return True
-    return False
+def is_collection_valid(item_name):
+    return any(collection.name == item_name for collection in bpy.data.collections)
 
 def has_sets_include(export_sets):
     return any(export_set.include for export_set in export_sets)
