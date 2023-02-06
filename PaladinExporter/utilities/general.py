@@ -4,17 +4,14 @@ def get_path():
     return os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 def preset_path_get():
-        path = get_path()
-        return os.path.join(path, "presets")
+    return os.path.join(get_path(), "presets")
 
 def preset_items_get():
-        preset_path = preset_path_get()
-        preset_files = [file for file in os.listdir(preset_path) if file.endswith(".json")]
-        items = [(
-            os.path.basename(file), 
-            json.load(open(os.path.join(preset_path, file)))["name"], 
-            json.load(open(os.path.join(preset_path, file)))["description"]) for file in preset_files]
-        return items
+    return [(
+        os.path.basename(file),
+        json.load(open(os.path.join(preset_path_get(), file)))["name"],
+        json.load(open(os.path.join(preset_path_get(), file)))["description"]) 
+        for file in os.listdir(preset_path_get()) if file.endswith(".json")]
 
 def is_collection_valid(item_name):
     return any(collection.name == item_name for collection in bpy.data.collections)
