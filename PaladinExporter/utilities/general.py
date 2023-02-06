@@ -63,12 +63,7 @@ def get_event_modifiers(event):
     return ctrl, alt, shift
 
 def get_export_path(export_set, export_item, filename):
-    export_path = os.path.join(os.path.dirname(bpy.data.filepath), filename)
-    if not export_item.path == "":
-        export_path = os.path.join(export_item.path, filename)
-    elif not export_set.path == "":
-        export_path = os.path.join(export_set.path, filename)
-    return export_path
+    return os.path.join(export_item.path or export_set.path or os.path.dirname(bpy.data.filepath), filename)
 
 object_types = ('MESH','EMPTY','ARMATURE')
 
