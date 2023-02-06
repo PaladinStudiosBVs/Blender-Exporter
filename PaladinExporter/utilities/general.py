@@ -23,14 +23,6 @@ def is_collection_valid(collection_name):
             return True
     return False
 
-def has_export_sets():
-    export_data = bpy.context.scene.exporter
-    export_sets = export_data.sets
-    
-    if len(export_sets) < 1:
-        return False
-    return True
-
 def has_sets_include(export_sets):
     return any(export_set.include for export_set in export_sets)
 
