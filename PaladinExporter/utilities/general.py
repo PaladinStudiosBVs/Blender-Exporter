@@ -31,29 +31,12 @@ def has_export_sets():
         return False
     return True
 
-def has_sets_include():
-    export_data = bpy.context.scene.exporter
-    export_sets = export_data.sets
+def has_sets_include(export_sets):
+    return any(export_set.include for export_set in export_sets)
 
-    for export_set in export_sets:
-        has_include = False
-        if export_set.include:
-            has_include = True
-            break
-    return has_include
-
-def included_sets_has_item():
-    export_data = bpy.context.scene.exporter
-    export_sets = export_data.sets
-
-    for export_set in export_sets:
-        has_items = False
-        if export_set.include:
-            if len(export_set.items) > 0:
-                has_items = True
-                break
-    return has_items
-
+def included_sets_has_item(export_sets):
+    return any(export_set.include and export_set.items for export_set in export_sets)
+    
 def get_event_modifiers(event):
     ctrl = event.ctrl
     if sys.platform.startswith('darwin'):
