@@ -24,9 +24,7 @@ def included_sets_has_item(export_sets):
     return any(export_set.include and export_set.items for export_set in export_sets)
     
 def get_event_modifiers(event):
-    ctrl = event.ctrl
-    if sys.platform.startswith('darwin'):
-        ctrl = event.oskey
+    ctrl = event.oskey if sys.platform.startswith('darwin') else event.ctrl
     alt = event.alt
     shift = event.shift
     return ctrl, alt, shift
