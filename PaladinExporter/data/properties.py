@@ -12,9 +12,7 @@ class ExportItemProperties(PropertyGroup):
     name: StringProperty()
 
 class ExportSetProperties(PropertyGroup):
-    set_presets_get = preset_items_get()
-
-    preset: EnumProperty(name='Set Preset', items=set_presets_get)
+    preset: EnumProperty(name='Set Preset', items=preset_items_get())
     has_path:BoolProperty(name="Show Path", description="Show or hide 'Export Set Path", default=True)
     path: StringProperty(name="Export Set Path", subtype='DIR_PATH', description="Export path for this Export Set")
     include: BoolProperty(name="Include Set", description="Enable, to include when exporting", default=True)
@@ -27,7 +25,6 @@ class ExportSetProperties(PropertyGroup):
 class ExporterSceneProperties(PropertyGroup):
 
     sets: CollectionProperty(type=ExportSetProperties)
-    sets_index: IntProperty(name="ExportSetIndex", default=0)
 
 classes = (ExportItemProperties, ExportSetProperties, ExporterSceneProperties, )
 
