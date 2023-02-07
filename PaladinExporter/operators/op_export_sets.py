@@ -17,12 +17,11 @@ class Paladin_OT_ExportSetRemove(bpy.types.Operator):
     bl_description = "Delete this 'Export Set'"
     bl_options = {'UNDO'}
 
-    index:IntProperty(name="set_index", default=0)
-
     @classmethod
     def poll(cls, context):
-        export_data = context.scene.exporter
-        return export_data.sets
+        return context.scene.exporter.sets
+
+    index:IntProperty(name="set_index", default=0)
 
     def execute(self, context):
         context.scene.exporter.sets.remove(self.index)
@@ -33,33 +32,32 @@ class Paladin_OT_ExportSetItemAdd(bpy.types.Operator):
     bl_label = "Add"
     bl_options = {'UNDO'}
 
-    set_index:IntProperty(name="Set Index", default=0)
-    
     @classmethod
     def poll(cls, context):
-        collection = context.collection
-        if collection.name == 'Scene Collection':
+        if context.collection.name == 'Scene Collection':
             return False
         return True
             
     @classmethod
     def description(cls, context, event):
-        collection = context.collection
-        if collection.name == 'Scene Collection':
+        collection_name = context.collection.name
+        if collection_name == 'Scene Collection':
             return "You cannot add 'Scene Collection'"
-        return f"Adds Collection '{collection.name}' to this export set"
+        return f"Adds Collection '{collection_name}' to this export set"
+
+    set_index:IntProperty(name="Set Index", default=0)
 
     def execute(self, context):
-        collection = context.collection
+        collection_name = context.collection.name
         export_set = context.scene.exporter.sets[self.set_index]
         
         for item in export_set.items:
-            if item.name == collection.name:
-                self.report({'WARNING'}, f"Collection '{collection.name}' already in set {self.set_index + 1}.")
+            if item.name == collection_name:
+                self.report({'WARNING'}, f"Collection '{collection_name}' already in set {self.set_index + 1}.")
                 return {'CANCELLED'}
         
         item = export_set.items.add()
-        item.name = collection.name
+        item.name = collection_name
         export_set.items_index = len(export_set.items)-1
         return{'FINISHED'}
 
@@ -85,13 +83,13 @@ class Paladin_OT_ExportSetItemMove(bpy.types.Operator):
     bl_label = "Move"
     bl_options = {'UNDO'}
 
-    set_index:IntProperty(name="Set Index", default=0)
-    direction: EnumProperty(items=[('UP', 'Up',""),('DOWN', 'Down',"")])
-
     @classmethod
     def description(cls, context, event):        
         return "Move Export Set Collection up or down"
     
+    set_index:IntProperty(name="Set Index", default=0)
+    direction: EnumProperty(items=[('UP', 'Up',""),('DOWN', 'Down',"")])
+
     def execute(self, context):
         export_set = context.scene.exporter.sets[self.set_index]
         items = export_set.items
