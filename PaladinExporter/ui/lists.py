@@ -34,7 +34,7 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
             col_cell.label(text=item.name)
         
         if item.use_path:
-            row.prop(item, "use_path", icon_only=True, icon_value=path_trueish, emboss=False)
+            row.prop(item, "use_path", icon_only=True, icon='RIGHTARROW', emboss=False)
         elif item.path:
             row.prop(item, "use_path", icon_only=True, icon_value=path_true, emboss=False)
         else:
