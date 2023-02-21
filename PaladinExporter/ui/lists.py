@@ -12,7 +12,9 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
             return
 
         include = item.include
-        icon_path = get_icon('custom_path')
+        path_false = get_icon('path_false')
+        path_trueish = get_icon('path_expanded')
+        path_true = get_icon('path_true')
         icon_collection = get_icon('collection_true') if item.use_collection else get_icon('collection_false')
         icon_origin = 'LOCKED' if item.use_origin else 'UNLOCKED'
         icon_include = 'CHECKBOX_HLT' if item.include else 'CHECKBOX_DEHLT'
@@ -32,9 +34,12 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
             col_cell.label(text=item.name)
         
         if item.use_path:
-            row.prop(item, 'use_path', icon_only=True, icon='RIGHTARROW_THIN', emboss=False)
+            row.prop(item, "use_path", icon_only=True, icon='RIGHTARROW', emboss=False)
+        elif item.path:
+            row.prop(item, "use_path", icon_only=True, icon_value=path_true, emboss=False)
         else:
-            row.prop(item, 'use_path', icon_only=True, icon_value=icon_path, emboss=False)
+            row.prop(item, "use_path", icon_only=True, icon_value=path_false, emboss=False)
+
         row.prop(item, 'use_origin', icon_only=True, icon=icon_origin, emboss=False)
         row.prop(item, 'use_collection', icon_only=True, icon_value=icon_collection, emboss=False)
         

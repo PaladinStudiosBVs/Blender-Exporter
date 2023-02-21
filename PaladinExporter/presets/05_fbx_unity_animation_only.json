@@ -1,5 +1,5 @@
 {
-    "name":"Unity Animation",
+    "name":"Unity Animation Only",
     "description":"Export animations for Unity using the .fbx format, ",
 
     "use_visible": false,

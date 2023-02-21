@@ -1,6 +1,6 @@
 import bpy, os, sys, json
 from bpy.props import BoolProperty
-from ..utilities.general import preset_path_get, is_collection_valid, has_export_sets, has_sets_include
+from ..utilities.general import preset_path_get, is_collection_valid, has_sets_include
 from ..utilities.general import included_sets_has_item, get_event_modifiers, get_export_path, exportable, exportable_selected, exportable_selected_nested
 from ..utilities.exporters import export_fbx
 from ..data.items import keys
@@ -13,28 +13,32 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
     
     @classmethod
     def poll(cls, context):
+        export_sets = context.scene.exporter.sets
+
         if not bpy.data.is_saved:
             return False
-        if not has_export_sets():
+        if not export_sets:
             return False
-        if not has_sets_include():
+        if not has_sets_include(export_sets):
             return False
-        if not included_sets_has_item():
+        if not included_sets_has_item(export_sets):
             return False   
         return True
     
     @classmethod
     def description(cls, context, event):
+        export_sets = context.scene.exporter.sets
+
         key_press = keys['WINDOWS']
         if sys.platform.startswith('darwin'):
             key_press = keys['MAC']
         if not bpy.data.is_saved:
             return "Save the file before Exporting"
-        if not has_export_sets():
+        if not export_sets:
             return "Create at least one Export Set"
-        if not has_sets_include():
+        if not has_sets_include(export_sets):
             return "Enable at least one Export Set"
-        if not included_sets_has_item():
+        if not included_sets_has_item(export_sets):
             return "Add items to the enabled Export Set(s)"
         return f"Export items from export sets\n{key_press[2]}   ▸   Export Selected"
 
