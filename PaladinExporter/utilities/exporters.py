@@ -5,8 +5,8 @@ def export_fbx(self, export_path):
         # Hard Coded
             batch_mode= "OFF",
             check_existing= False,
-            use_selection=True,
-            use_active_collection=False,
+            use_selection= True,
+            use_active_collection= False,
         # Include
             #'use_visible' not supported by blender 3.1, needs condition:
             #use_visible=(self.settings["use_visible"]),

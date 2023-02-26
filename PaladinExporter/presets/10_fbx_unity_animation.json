@@ -15,7 +15,7 @@
     "bake_space_transform": false,
 
     "mesh_smooth_type": "FACE",
-    "use_subsurf": true,
+    "use_subsurf": false,
     "use_mesh_modifiers": true,
     "use_mesh_edges": false,
     "use_triangles": true,
