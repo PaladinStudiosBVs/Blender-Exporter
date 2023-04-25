@@ -44,10 +44,9 @@ Make sure the `Bake Axis Conversion` bool is set to true within Unity on `.fbx` 
 <a name="develop"/>
 
 # Developing & Testing
-To test during development, the contents of folder `PaladinExporter` need to be copied over to the Blender `%AppData%\Blender Foundation\Blender\Vx.xx\scripts\addons\PaladinExporter` installation folder. Where `Vx.xx` should be the installed Blender version. The included `SendToBlender.bat` file does this for Blender v2.93 for ease of use.
+To test during development, add the path to the addons folder in this repo to the Scripts path in Blender Preferences. Preferences -> File Paths -> Data -> Scripts
 
-
-After copying the files, make sure to reload the python scripts within Blender. Click the top left Blender icon -> System -> Reload Scripts.
+After adding the path, make sure to reload the python scripts within Blender. Click the top left Blender icon -> System -> Reload Scripts.
 
 ![image](https://user-images.githubusercontent.com/10919737/159488403-c4d14dc8-03d4-4b18-974c-e52eb3a4f739.png)
 
