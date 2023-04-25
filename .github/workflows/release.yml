@@ -1,0 +1,47 @@
+name: Release new version
+
+on:
+  push:
+    branches:
+      -main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get version from init file
+        id: get_version
+        run: echo "VERSION=PaladinExporter-v$(grep 'version' addons/PaladinExporter/__init__.py | cut -d' ' -f3 | sed 's/[(),]//g')" >> $GITHUB_ENV
+
+      - name: Get previous release tag
+        id: get_previous_tag
+        run: echo "PREV_TAG=$(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1))" >> $GITHUB_ENV
+
+      - name: Generate release notes
+        id: generate_release_notes
+        uses: peter-evans/release-please-action@v2.5.2
+        with:
+          token: ${{ secrets.PALABOT_PAT }}
+          tag: ${{ env.PREV_TAG }}
+
+      - name: Create archive
+        run: zip -r ${{ env.VERSION }}.zip addons/PaladinExporter
+        working-directory: ${{ github.workspace }}
+
+      - name: Create Release
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.PALABOT_PAT }}
+        with:
+          tag_name: ${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
+        body: ${{ steps.generate_release_notes.outputs.body }}
+        draft: false
+        prerelease: false
+        assets:
+          - name: ${{ env.VERSION }}.zip
+            path: ${{ env.VERSION }}.zip
+            label: PaladinExporter addon zip archive
