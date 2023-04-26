@@ -16,11 +16,8 @@ jobs:
 
       - name: Get version from init file
         id: get_version
-        run: echo "VERSION=PaladinExporter-v$(grep -o -E '"version":\s*\(\d+,\s*\d+,\s*\d+' addons/PaladinExporter/__init__.py | sed -E 's/"version":\s*\(|, */./g')" >> $GITHUB_ENV
-
-      - name: Get previous release tag
-        id: get_previous_tag
-        run: echo "PREV_TAG=$(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1))" >> $GITHUB_ENV
+        run: |
+          echo "VERSION=PaladinExporter-v$(grep -o -E '"version":\s*\(\d+,\s*\d+,\s*\d+' addons/PaladinExporter/__init__.py | sed -E 's/"version": *\(//; s/, */./g')" >> $GITHUB_ENV
 
       - name: Create archive
         run: zip -r ${{ env.VERSION }}.zip addons/PaladinExporter
@@ -31,7 +28,7 @@ jobs:
         uses: actions/create-release@v1.1.4
         with:
           tag_name: ${{ env.VERSION }}
-          release_name: Release ${{ env.VERSION }}
+          release_name: ${{ env.VERSION }}
           draft: false
           prerelease: false
         env:
