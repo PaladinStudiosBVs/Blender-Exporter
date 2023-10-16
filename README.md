@@ -12,7 +12,7 @@
 
 # Description
 
-![image](https://user-images.githubusercontent.com/10919737/159481452-bf4e2765-9696-4b31-a93c-1f01a2f06c9a.png)
+<img width="360" alt="image" align="center" src="https://github.com/PaladinStudiosBVs/Blender-Exporter/assets/3831890/6276cf1f-e728-41bd-b9d3-8d0055d8e442">
 
 The Paladin Exporter assists with the workflow of exporting `.fbx` files. Collections can be defined to be exported, as well as the target path of where objects should be exported to. All configuration is saved within the `.blend` file.
 
@@ -22,13 +22,15 @@ The Paladin Exporter assists with the workflow of exporting `.fbx` files. Collec
 
 The main export path is where `.fbx` files will be exported to.
 
-Added collections will be exported on an per object bases within the collection. The exported `.fbx` files will have their object's name as filename. A good way of organizing your export is to add a `export` collection which contains all objects to be exported for that `.blend` file.
+Added collections will be exported on an per object bases within the collection. The exported `.fbx` files will have their object's name as filename.
 
-When exporting to multiple folders is required, a collection per export path can be added (having a custom path defined).
+When exporting to multiple folders is required an export path can be defined for each collection:
+<img width="332" alt="image" src="https://github.com/PaladinStudiosBVs/Blender-Exporter/assets/3831890/51a43657-8b07-4cf8-935a-f5510c9d6cc9">
 
-The `Reset Origin` bool will export every object within a collection at the world origin (0,0,0).
 
-When exporting a rig without animation, the `Include Meshes` should be set to true and the `Bake Animation` set to false.
+The `Lock Icon` bool will export every object within a collection at it's position in world space essentially locking it in place when exporting. Default functionality moves the exported objects to `000` in world space.
+
+When exporting a rig without animation, the export setting should be set to 
 
 When exporting animations only, the `Include Meshes` should be set to false and the `Bake Animation` set to true. A filename suffix will be added as well.
 
