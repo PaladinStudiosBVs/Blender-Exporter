@@ -22,23 +22,22 @@ The Paladin Exporter assists with the workflow of exporting `.fbx` files. Collec
 
 The main export path is where `.fbx` files will be exported to.
 
-Added collections will be exported on an per object bases within the collection. The exported `.fbx` files will have their object's name as filename.
+Added collections will be exported on an per object bases within the collection. The exported `.fbx` files will have their object's name as filename. When enabling the `Collection Icon` the whole collection will be exported as a single fbx with it's origin at `000`
 
 When exporting to multiple folders is required an export path can be defined for each collection:
 <img width="332" alt="image" src="https://github.com/PaladinStudiosBVs/Blender-Exporter/assets/3831890/51a43657-8b07-4cf8-935a-f5510c9d6cc9">
 
-
 The `Lock Icon` bool will export every object within a collection at it's position in world space essentially locking it in place when exporting. Default functionality moves the exported objects to `000` in world space.
 
-When exporting a rig without animation, the export setting should be set to 
+When exporting a rig with animations, the export setting should be set to `Unity Animation`
 
-When exporting animations only, the `Include Meshes` should be set to false and the `Bake Animation` set to true. A filename suffix will be added as well.
+When exporting animations only, the export setting should be set to `Unity Animation Only`
 
 <a name="requirements"/>
 
 # Requirements
 
-Minimium Blender version 2.93.1 is required. As well as Unity version 2020.3 (using the `Bake Axis Conversion` import setting).
+Minimium Blender version 3.0.1 is required. As well as Unity version 2020.3 (using the `Bake Axis Conversion` import setting).
 Make sure the `Bake Axis Conversion` bool is set to true within Unity on `.fbx` files exported with the exporter.
 
 ![image](https://user-images.githubusercontent.com/10919737/174821463-2b928b8a-79eb-4d03-9077-d7af6fc46695.png)
