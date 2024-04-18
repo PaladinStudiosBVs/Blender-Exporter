@@ -28,11 +28,10 @@ Before you submit a contribution, please make sure the following is done:
 
 Here's how we suggest you go about proposing a change to this project:
 
-1. Make sure your code adheres to the project's coding conventions (if any) and that your code is well-documented.
-2. Ensure that your changes are tested.
-3. Submit a pull request to the original repository with a clear list of what you've done and a description of the problem you're trying to solve or the functionality you're adding.
-4. Include the phrase "References #issue_number" in your pull request description to link the PR to the existing issue.
-5. Your contribution will be reviewed by the maintainers of the project, who may request some changes. Keep an open line of communication for feedback and discussion.
+1. Ensure that your changes are tested.
+2. Submit a pull request to the original repository with a clear list of what you've done and a description of the problem you're trying to solve or the functionality you're adding.
+3. Include the phrase "References #issue_number" in your pull request description to link the PR to the existing issue.
+4. Your contribution will be reviewed by the maintainers of the project, who may request some changes. Keep an open line of communication for feedback and discussion.
 
 ## Reporting Bugs
 
