@@ -32,7 +32,6 @@ from .utilities import icons, general
 from .ui import panels, lists
 from .data import properties, items
 
-
 modules = (op_export_fbx, op_export_sets, panels, lists, properties, icons)
 
 def register():

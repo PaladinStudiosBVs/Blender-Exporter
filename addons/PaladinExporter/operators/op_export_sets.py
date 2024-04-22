@@ -1,10 +1,15 @@
 import bpy
 from bpy.props import EnumProperty, IntProperty
+from ..utilities.general import generate_random_uuid
+
+# Blender's builtin name for collections root
+DEFAULT_SCENE_COLLECTION = 'Scene Collection'
+UUID_PROPERTY = 'UUID'
 
 class Paladin_OT_ExportSetAdd(bpy.types.Operator):
     bl_idname = "paladin.export_set_add"
     bl_label = "Add Set"
-    bl_description = "Adds an export set"
+    bl_description = "Adds an 'Export Set'"
     bl_options = {'UNDO'}
     
     def execute(self, context):
@@ -34,30 +39,39 @@ class Paladin_OT_ExportSetItemAdd(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        if context.collection.name == 'Scene Collection':
+        if context.collection.name == DEFAULT_SCENE_COLLECTION:
             return False
         return True
             
     @classmethod
     def description(cls, context, event):
         collection_name = context.collection.name
-        if collection_name == 'Scene Collection':
+        if collection_name == DEFAULT_SCENE_COLLECTION:
             return "You cannot add 'Scene Collection'"
         return f"Adds Collection '{collection_name}' to this export set"
 
     set_index:IntProperty(name="Set Index", default=0)
 
     def execute(self, context):
+        collection = context.collection
         collection_name = context.collection.name
         export_set = context.scene.exporter.sets[self.set_index]
         
+        # Create a unique id for the collection object if it doesn't have one 
+        if UUID_PROPERTY not in collection:
+            collection[UUID_PROPERTY] = generate_random_uuid()
+
+        collection_uuid = collection[UUID_PROPERTY]
+        
+        # linking is done using the unique id property of the collection object 
         for item in export_set.items:
-            if item.name == collection_name:
+            if item.uuid == collection_uuid:
                 self.report({'WARNING'}, f"Collection '{collection_name}' already in set {self.set_index + 1}.")
                 return {'CANCELLED'}
         
         item = export_set.items.add()
         item.name = collection_name
+        item.uuid = collection_uuid
         export_set.items_index = len(export_set.items)-1
         return{'FINISHED'}
 

@@ -10,6 +10,7 @@ class ExportItemProperties(PropertyGroup):
     use_collection: BoolProperty(name="Collection is Object", description="Enable, so the collection is the exported object", default=False)
     path: StringProperty(name="Path", subtype='DIR_PATH', description="Custom export path for this collection")
     name: StringProperty()
+    uuid: StringProperty()
 
 class ExportSetProperties(PropertyGroup):
     preset: EnumProperty(name='Set Preset', items=preset_items_get())

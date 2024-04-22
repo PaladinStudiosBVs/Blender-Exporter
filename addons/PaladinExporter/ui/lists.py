@@ -1,12 +1,13 @@
 import bpy
 from ..utilities.icons import get_icon
 from ..utilities.general import is_collection_valid
+from ..utilities.general import get_collection_name
 
 class VIEW3D_UL_ExportList(bpy.types.UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
         row = layout.row(align=True)
         
-        if not is_collection_valid(item.name):
+        if not is_collection_valid(item.uuid):
             row.enabled = False
             row.label(text=f"Missing Collection: '{item.name}'", icon='ERROR')
             return
@@ -25,13 +26,13 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
             split = row.split(factor=0.35)
             col_cell = split.column()
             col_cell.enabled = include
-            col_cell.label(text=item.name)
+            col_cell.label(text=get_collection_name(item.uuid))
             path_cell = split.column()
             path_cell.prop(item, 'path', text="")
         else:
             col_cell = row.column()
             col_cell.enabled = include
-            col_cell.label(text=item.name)
+            col_cell.label(text=get_collection_name(item.uuid))
         
         if item.use_path:
             row.prop(item, "use_path", icon_only=True, icon='RIGHTARROW', emboss=False)
