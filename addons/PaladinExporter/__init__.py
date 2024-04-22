@@ -4,7 +4,7 @@ bl_info = {
     "description": "Export multiple assets",
     "author": "Joep Peters, Laurens 't Jong",
     "blender": (3, 4, 1),
-    "version": (1, 1, 12),
+    "version": (1, 2, 1),
     "category": "Import-Export",
     "location": "View3D > Sidebar > Paladin Studios",
     "warning": "",

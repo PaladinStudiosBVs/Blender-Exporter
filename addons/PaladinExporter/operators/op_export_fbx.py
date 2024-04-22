@@ -3,6 +3,7 @@ from bpy.props import BoolProperty
 from ..utilities.general import preset_path_get, is_collection_valid, has_sets_include
 from ..utilities.general import included_sets_has_item, get_event_modifiers, get_export_path, exportable, exportable_selected, exportable_selected_nested
 from ..utilities.exporters import export_fbx
+from ..utilities.general import get_collection_name
 from ..data.items import keys
 
 class Paladin_OT_ExportFbx(bpy.types.Operator):
@@ -64,12 +65,13 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
             suffix = export_set.suffix
             
             for export_item in export_set.items:
-                item_name = export_item.name
+                item_uuid = export_item.uuid
                 if not export_item.include:
                     continue
-                if not is_collection_valid(item_name):
+                if not is_collection_valid(item_uuid):
                     continue
-                
+                    
+                item_name = get_collection_name(item_uuid)
                 coll = bpy.data.collections[item_name]
                 v_coll = bpy.context.view_layer.layer_collection.children[item_name]
                 coll_objects = coll.objects

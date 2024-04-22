@@ -9,8 +9,8 @@ class ExportItemProperties(PropertyGroup):
     use_origin: BoolProperty(name="Lock Position", description="If locked, objects will not be moved to world '0.0.0'", default=False)
     use_collection: BoolProperty(name="Collection is Object", description="Enable, so the collection is the exported object", default=False)
     path: StringProperty(name="Path", subtype='DIR_PATH', description="Custom export path for this collection")
-    name: StringProperty()
-    uuid: StringProperty()
+    name: StringProperty(description="")
+    uuid: StringProperty(description="")
 
 class ExportSetProperties(PropertyGroup):
     preset: EnumProperty(name='Set Preset', items=preset_items_get())
