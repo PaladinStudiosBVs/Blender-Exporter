@@ -18,7 +18,7 @@ def preset_items_get():
 
 # Returns if any collection exists with the a uuid property missing the provided uuid
 def is_collection_valid(item_uuid):
-    return any(collection[UUID_PROPERTY] == item_uuid for collection in bpy.data.collections)
+    return any(collection.get(UUID_PROPERTY) == item_uuid for collection in bpy.data.collections)
     
 # Returns the collection's name based on uuid
 def get_collection_name(item_uuid):
@@ -40,7 +40,7 @@ def get_event_modifiers(event):
     return ctrl, alt, shift
 
 def get_export_path(export_set, export_item, filename):
-    return os.path.join(export_item.path or export_set.path or os.path.dirname(bpy.data.filepath), filename)
+    return os.path.join(os.path.dirname(export_item.path) or os.path.dirname(export_set.path) or os.path.dirname(bpy.data.filepath), filename)
 
 def exportable(obj):
     return obj.parent == None and obj.type in export_object_types and obj.visible_get()
@@ -57,6 +57,3 @@ def generate_random_uuid():
     uuid_bits[8] = (uuid_bits[8] & 0x3f) | 0x80
     uuid_str = ''.join(['{:02x}'.format(byte) for byte in uuid_bits])
     return '-'.join([uuid_str[:8], uuid_str[8:12], uuid_str[12:16], uuid_str[16:20], uuid_str[20:]])
-    
-    
-

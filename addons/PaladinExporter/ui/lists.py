@@ -9,7 +9,7 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
         
         if not is_collection_valid(item.uuid):
             row.enabled = False
-            row.label(text=f"Missing Collection!", icon='ERROR')
+            row.label(text=f"Missing collection!", icon='ERROR')
             return
 
         include = item.include
@@ -23,7 +23,7 @@ class VIEW3D_UL_ExportList(bpy.types.UIList):
         row.prop(item, 'include', icon_only=True, icon=icon_include, emboss=False)
         
         if item.use_path:
-            split = row.split(factor=0.35)
+            split = row.split(factor = 0.35)
             col_cell = split.column()
             col_cell.enabled = include
             col_cell.label(text=get_collection_name(item.uuid))

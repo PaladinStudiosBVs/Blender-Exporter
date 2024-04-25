@@ -17,11 +17,11 @@ class ExportSetProperties(PropertyGroup):
     has_path:BoolProperty(name="Show Path", description="Show or hide 'Export Set Path", default=True)
     path: StringProperty(name="Export Set Path", subtype='DIR_PATH', description="Export path for this Export Set")
     include: BoolProperty(name="Include Set", description="Enable, to include when exporting", default=True)
-    has_affixes:BoolProperty(name="Show Affixes", description="Show or hide export set 'Affixes'", default=True )
+    has_affixes:BoolProperty(name="Show Affixes", description="Show or hide export set 'Affixes'", default=False )
     prefix: StringProperty(name="Prefix", default="")
     suffix: StringProperty(name="Suffix", default="")
     items: CollectionProperty(type=ExportItemProperties)
-    items_index: IntProperty(name="SetItemsIndex", default=0)
+    items_index: IntProperty(name="Collection", default=0)
 
 class ExporterSceneProperties(PropertyGroup):
 

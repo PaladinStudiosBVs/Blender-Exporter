@@ -57,9 +57,9 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
         
         for i, export_set in enumerate(export_sets):
             if not export_set.include:
-                self.report({'INFO'},(f"Skipped 'Export Set {i+1}'\n"))
+                self.report({'INFO'},(f"Skipped 'Export Set {i + 1}'\n"))
                 continue
-            self.report({'INFO'},(f"Exported 'Export Set {i+1}'\n"))
+            self.report({'INFO'},(f"Exported 'Export Set {i + 1}'\n"))
             self.settings = json.load(open(os.path.join(preset_path, export_set.preset), 'r'))
             prefix = export_set.prefix
             suffix = export_set.suffix
