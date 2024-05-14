@@ -8,7 +8,7 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
     bl_label = "Game Exporter"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = "Paladin Studios"
+    bl_category = "Game Exporter"
 
     def draw(self, context):
         export_sets = context.scene.exporter.sets

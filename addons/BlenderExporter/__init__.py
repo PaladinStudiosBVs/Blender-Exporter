@@ -1,12 +1,12 @@
 # Addon info
 bl_info = {
-    "name": "Paladin Game Exporter",
-    "description": "Export multiple assets",
+    "name": "Game Exporter",
+    "description": "Export models & animations to game engines such as Unity & Unreal",
     "author": "Joep Peters, Laurens 't Jong",
     "blender": (3, 4, 1),
-    "version": (1, 2, 1),
+    "version": (1, 2, 2),
     "category": "Import-Export",
-    "location": "View3D > Sidebar > Paladin Studios",
+    "location": "View3D > Sidebar > Game Exporter",
     "warning": "",
     "wiki_url": "",
     "tracker_url": "",
