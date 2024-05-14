@@ -1,0 +1,38 @@
+{
+    "name":"Unity Animation Only",
+    "description":"Export animations for Unity using the .fbx format, ",
+
+    "use_visible": false,
+    "object_types": ["ARMATURE","EMPTY"],
+    "use_custom_props": false,
+
+    "global_scale": 1.00,
+    "apply_scale_options": "FBX_SCALE_ALL",
+    "axis_forward": "Y",
+    "axis_up": "Z",
+    "apply_unit_scale": true,
+    "use_space_transform": false,
+    "bake_space_transform": false,
+
+    "mesh_smooth_type": "FACE",
+    "use_subsurf": false,
+    "use_mesh_modifiers": true,
+    "use_mesh_edges": false,
+    "use_triangles": true,
+    "use_tspace": false,
+    "colors_type": "SRGB",
+
+    "primary_bone_axis": "Y",
+    "secondary_bone_axis": "X",
+    "armature_nodetype": "NULL",
+    "use_armature_deform_only": true,
+    "add_leaf_bones": false,
+
+    "bake_anim": true,
+    "bake_anim_use_all_bones": true,
+    "bake_anim_use_nla_strips": false,
+    "bake_anim_use_all_actions": true,
+    "bake_anim_force_startend_keying": true,
+    "bake_anim_step": 1.0,
+    "bake_anim_simplify_factor": 0.05
+}

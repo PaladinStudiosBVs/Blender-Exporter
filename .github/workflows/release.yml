@@ -1,0 +1,45 @@
+name: Release new version
+
+on:
+  push:
+    branches: ["main"]
+    paths-ignore:
+      - ".github/**"
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get version from init file
+        id: get_version
+        run: |
+          echo "VERSION=BlenderExporter-v$(grep -o -E '"version":\s*\(\d+,\s*\d+,\s*\d+' addons/BlenderExporter/__init__.py | sed -E 's/"version": *\(//; s/, */./g')" >> $GITHUB_ENV
+
+      - name: Create archive
+        run: zip -r ${{ env.VERSION }}.zip addons/BlenderExporter
+        working-directory: ${{ github.workspace }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.1.4
+        with:
+          tag_name: ${{ env.VERSION }}
+          release_name: ${{ env.VERSION }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.PALABOT_PAT }}
+
+      - name: upload windows artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ env.VERSION }}.zip
+          asset_name: ${{ env.VERSION }}.zip
+          asset_content_type: application/zip
