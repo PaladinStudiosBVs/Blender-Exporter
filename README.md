@@ -14,7 +14,7 @@
 
 <img width="360" alt="image" align="center" src="https://github.com/PaladinStudiosBVs/Blender-Exporter/assets/3831890/6276cf1f-e728-41bd-b9d3-8d0055d8e442">
 
-The Paladin Exporter assists with the workflow of exporting `.fbx` files. Collections can be defined to be exported, as well as the target path of where objects should be exported to. All configuration is saved within the `.blend` file.
+The Blender Exporter assists with the workflow of exporting `.fbx` files. Collections can be defined to be exported, as well as the target path of where objects should be exported to. All configuration is saved within the `.blend` file.
 
 <a name="bestpractices"/>
 
@@ -60,13 +60,11 @@ Click the checkbox to enable the add on.
 
 <b> Note: </b> When the addon has been enabled once, this step can be skipped. Reloading scripts is only required.
 
-The addon is now available in the main viewport on the 'N' panel. If it isn't visible, press `N` to reveal the panel and click on `Paladin Studios`. 
+The addon is now available in the main viewport on the 'N' panel. If it isn't visible, press `N` to reveal the panel and click on `Paladin Studios`.
 
 <a name="release"/>
 
 # Creating a new release
-Checkout the repository and switch to the branch you need a release from.
+Update the version in ```addons/BlenderExporter/__init__.py```
 
-Zip the `PaladinExporter` folder to a `PaladinExporterVx.x.x.zip`, where x.x.x should be the relevant version number.
-
-The zip file can now be distributed and installed using the add on preferences menu, by clicking `Install` and selecting the .zip file.
+When changes are merged to the ```main``` branch and a new version is detected, the release automation will create a new package
