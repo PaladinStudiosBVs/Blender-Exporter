@@ -54,7 +54,7 @@ After adding the path, make sure to reload the python scripts within Blender. Cl
 
 Now the addon scripts should be in Blender and the add-on can be enabled in the preferences menu. Search for `Game Exporter` with the `Community` tab enabled to find it.
 
-![image](https://user-images.githubusercontent.com/10919737/159488622-1b6a5f81-5a4b-4d85-b040-aab91ece587e.png)
+![image](https://github.com/PaladinStudiosBVs/Blender-Exporter/assets/45912349/1b10f4df-e271-4396-ae66-0a2188f1b04c)
 
 Click the checkbox to enable the add on.
 
