@@ -17,10 +17,10 @@ jobs:
       - name: Get version from init file
         id: get_version
         run: |
-          echo "VERSION=BlenderExporter-v$(grep -o -E '"version":\s*\(\d+,\s*\d+,\s*\d+' addons/BlenderExporter/__init__.py | sed -E 's/"version": *\(//; s/, */./g')" >> $GITHUB_ENV
+          echo "VERSION=BlenderExporter-v$(grep -o -E '"version":\s*\(\d+,\s*\d+,\s*\d+' BlenderExporter/__init__.py | sed -E 's/"version": *\(//; s/, */./g')" >> $GITHUB_ENV
 
       - name: Create archive
-        run: zip -r ${{ env.VERSION }}.zip addons/BlenderExporter
+        run: zip -r ${{ env.VERSION }}.zip BlenderExporter
         working-directory: ${{ github.workspace }}
 
       - name: Create Release
