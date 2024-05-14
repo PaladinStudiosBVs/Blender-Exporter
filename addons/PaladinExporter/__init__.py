@@ -4,7 +4,7 @@ bl_info = {
     "description": "Export multiple assets",
     "author": "Joep Peters, Laurens 't Jong",
     "blender": (3, 4, 1),
-    "version": (1, 1, 12),
+    "version": (1, 2, 1),
     "category": "Import-Export",
     "location": "View3D > Sidebar > Paladin Studios",
     "warning": "",
@@ -31,7 +31,6 @@ from .operators import op_export_fbx, op_export_sets
 from .utilities import icons, general
 from .ui import panels, lists
 from .data import properties, items
-
 
 modules = (op_export_fbx, op_export_sets, panels, lists, properties, icons)
 

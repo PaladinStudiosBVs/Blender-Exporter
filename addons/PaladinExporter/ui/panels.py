@@ -63,7 +63,7 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         split = row.split(factor=0.25, align=True)
         name_cell = split.column()
         name_cell. enabled = include
-        name_cell.label(text=f"Set {index+1}")
+        name_cell.label(text=f"Set {index + 1}")
         preset_cell = split.column()
         preset_cell.prop(export_set,'preset', text="", emboss=True)
         
@@ -77,7 +77,7 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
 
         if export_set.has_path:
             row = col.row(align=True)
-            row.prop(export_set, "path", text="Path")
+            row.prop(export_set, "path", text="Path")      
         if export_set.has_affixes:
             row = col.row(align=True)
             row.prop(export_set, "prefix", text="Affixes")
