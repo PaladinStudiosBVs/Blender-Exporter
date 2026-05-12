@@ -1,7 +1,7 @@
 import bpy, os, sys, json
 from bpy.props import BoolProperty
 from ..utilities.general import preset_path_get, is_collection_valid, has_sets_include
-from ..utilities.general import included_sets_has_item, get_event_modifiers, get_export_path, exportable, exportable_selected, exportable_selected_nested
+from ..utilities.general import included_sets_has_item, get_event_modifiers, get_export_path, exportable, exportable_selected, exportable_selected_nested, exportable_all, exportable_selected_all, exportable_selected_nested_all
 from ..utilities.exporters import export_fbx
 from ..utilities.general import get_collection_name
 from ..data.items import keys
@@ -48,11 +48,23 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
         return self.execute(context)
 
     def execute(self, context):
+        if not hasattr(self, 'alt'):
+            self.ctrl = self.alt = self.shift = False
         export_sets = context.scene.exporter.sets
         preset_path = preset_path_get()
-        old_selected = context.selected_objects
-        old_active = context.view_layer.objects.active if old_selected and context.view_layer.objects.active else None
-        old_mode = context.object.mode if old_active else None
+
+        # Capture the original state before any changes
+        current_active = context.view_layer.objects.active
+        current_mode = current_active.mode if current_active else 'OBJECT'
+
+        # Switch to Object Mode if needed (export requires Object Mode context)
+        if current_mode != 'OBJECT':
+            bpy.ops.object.mode_set(mode='OBJECT')
+
+        # Capture the selection state now that we are in Object Mode
+        old_selected = list(context.selected_objects)
+        old_active = context.view_layer.objects.active if old_selected else None
+        
         exported_objects = []
         
         for i, export_set in enumerate(export_sets):
@@ -78,23 +90,41 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                 is_export_selected = (self.alt or self.export_selected)
                 is_export_selected_valid = any(obj.select_get() for obj in coll.objects)
                 export_objects = []
-                
+
+                # Select filter functions based on include_hidden toggle:
+                if export_item.include_hidden:
+                    filter_fn = exportable_all
+                    filter_selected_fn = exportable_selected_all
+                    filter_selected_nested_fn = exportable_selected_nested_all
+                else:
+                    filter_fn = exportable
+                    filter_selected_fn = exportable_selected
+                    filter_selected_nested_fn = exportable_selected_nested
+
                 # With export item use collection:
                 if export_item.use_collection:
                     if coll.hide_viewport or v_coll.exclude:
                         continue
                     if is_export_selected:
                         if is_export_selected_valid:
-                            export_objects = [obj for obj in coll_objects if exportable(obj)]
+                            export_objects = [obj for obj in coll_objects if filter_fn(obj)]
                     else:
-                        export_objects = [obj for obj in coll_objects if exportable(obj)]
+                        export_objects = [obj for obj in coll_objects if filter_fn(obj)]
+                    
                     # Exporting:
                     if export_objects:
+                        
+                        # Temporarily unhide objects for export when visible_only is off:
+                        hidden_objects = []
+                        if export_item.include_hidden:
+                            for obj in coll_objects:
+                                if obj.hide_get():
+                                    obj.hide_set(False)
+                                    hidden_objects.append(obj)
+                        
                         filename = (prefix)+(item_name)+(suffix)+".fbx"
                         export_path = get_export_path(export_set, export_item, filename)
                         exported_objects.append(filename)
-                        if old_active:
-                            bpy.ops.object.mode_set(mode='OBJECT')
                         bpy.ops.object.select_all(action='DESELECT')
                         for obj in export_objects:
                             obj.select_set(True)
@@ -102,22 +132,35 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                             bpy.ops.object.select_grouped(extend=True, type='CHILDREN_RECURSIVE')
                         export_fbx(self, export_path)
                         self.report({'INFO'},f"Exported {prefix}{item_name}{suffix}")
+                        
+                        # Restore hidden state:
+                        for obj in hidden_objects:
+                            obj.hide_set(True)
                 else:
                     if is_export_selected:
                         if is_export_selected_valid:
-                            export_objects_nested = set(obj.parent for obj in coll_objects if exportable_selected_nested(obj))
-                            export_objects = set(obj for obj in coll_objects if exportable_selected(obj))
-                            export_objects = export_objects.union(export_objects_nested)    
+                            export_objects_nested = set(obj.parent for obj in coll_objects if filter_selected_nested_fn(obj))
+                            export_objects = set(obj for obj in coll_objects if filter_selected_fn(obj))
+                            export_objects = export_objects.union(export_objects_nested)
                     else:
-                        export_objects = [obj for obj in coll_objects if exportable(obj)]                             
+                        export_objects = [obj for obj in coll_objects if filter_fn(obj)]
+
                     # Exporting:
                     if export_objects:
+                        
+                        # Temporarily unhide objects for export when visible_only is off:
+                        hidden_objects = []
+                        if export_item.include_hidden:
+                            for obj in coll_objects:
+                                if obj.hide_get():
+                                    obj.hide_set(False)
+                                    hidden_objects.append(obj)
+
                         for obj in export_objects:
                             filename = (prefix)+(obj.name)+(suffix)+".fbx"
                             export_path = get_export_path(export_set, export_item, filename)
                             exported_objects.append(filename)
-                            if old_active:
-                                bpy.ops.object.mode_set(mode='OBJECT')
+                            
                             bpy.ops.object.select_all(action='DESELECT')
                             obj.select_set(True)
                             context.view_layer.objects.active = obj
@@ -129,13 +172,25 @@ class Paladin_OT_ExportFbx(bpy.types.Operator):
                             self.report({'INFO'},f"Exported '{prefix}{obj.name}{suffix}'")
                             obj.location = old_location
                         
-                # Selecting to check for selected objects next loop:
+                        # Restore hidden state:
+                        for obj in hidden_objects:
+                            obj.hide_set(True)
+                        
+                # Restore selection to check for selected objects next loop:
+                bpy.ops.object.select_all(action='DESELECT')
+                for obj in old_selected:
+                    obj.select_set(True)
                 if old_active:
-                    bpy.ops.object.mode_set(mode='OBJECT')
-                    bpy.ops.object.select_all(action='DESELECT')
-                    [obj.select_set(True) for obj in old_selected]
                     context.view_layer.objects.active = old_active
-                    bpy.ops.object.mode_set(mode=old_mode)
+
+        # Restore the original selection and mode
+        bpy.ops.object.select_all(action='DESELECT')
+        for obj in old_selected:
+            obj.select_set(True)
+        if current_active:
+            context.view_layer.objects.active = current_active
+            if current_mode != 'OBJECT':
+                bpy.ops.object.mode_set(mode=current_mode)
         
         # Reporting number of exported objects:
         length = len(exported_objects)

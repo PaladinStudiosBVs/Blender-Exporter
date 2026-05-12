@@ -2,6 +2,7 @@ import bpy
 
 from ..operators import op_export_fbx, op_export_sets
 from ..utilities.icons import get_icon
+from ..utilities.general import is_collection_valid
 
 class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
     bl_idname = "VIEW3D_PT_Paladin_Exporter_Panel"
@@ -20,8 +21,6 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         icon_affix_true = get_icon('affix_true')
         icon_affix_expanded = get_icon('affix_expanded')
         export_selection_icon = get_icon('export_selection')
-        remove_set = get_icon('remove_set')
-        
         layout = self.layout
         layout.use_property_decorate = False
 
@@ -32,10 +31,13 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         col.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Export', icon_value=export_icon).export_selected = False
         col.operator(op_export_fbx.Paladin_OT_ExportFbx.bl_idname, text='Selected', icon_value=export_selection_icon).export_selected = True
 
+        row = layout.row(align=True)
+        row.prop(context.scene.exporter, "auto_export", text="Auto Export on Save")
+
         for index, export_set in enumerate(export_sets):
             if export_set.has_path:
                 icon_path = icon_path_expanded
-            elif export_set.path:
+            elif export_set.path and export_set.path != '//':
                 icon_path = icon_path_true
             else:
                 icon_path = icon_path_false
@@ -47,12 +49,15 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
             else:
                 icon_affix = icon_affix_false
             
-            self.draw_set(export_set, index, remove_set, icon_path, icon_affix)
+            self.draw_set(export_set, index, icon_path, icon_affix)
 
         box = self.layout.box()
-        box.operator(op_export_sets.Paladin_OT_ExportSetAdd.bl_idname, icon='ADD', text="", emboss=False)
+        row = box.row(align=True)
+        row.operator(op_export_sets.Paladin_OT_ExportSetAdd.bl_idname, icon='ADD', text="", emboss=False)
+        row.operator(op_export_sets.Paladin_OT_RepairAllSets.bl_idname, icon='ORPHAN_DATA', text="", emboss=False)
+        row.operator(op_export_sets.Paladin_OT_DiagnoseExporterData.bl_idname, icon='INFO', text="", emboss=False)
 
-    def draw_set(self, export_set, index, remove_set, icon_path, icon_affix):
+    def draw_set(self, export_set, index, icon_path, icon_affix):
         items = export_set.items
         include = export_set.include
         layout = self.layout.box()
@@ -69,15 +74,19 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
         
         row.prop(export_set, "has_path", icon_only=True, icon_value=icon_path, emboss=False) 
         row.prop(export_set, "has_affixes", icon_only=True, icon_value=icon_affix, emboss=False)
-        
-        row.operator(op_export_sets.Paladin_OT_ExportSetRemove.bl_idname, icon_value=remove_set, text="", emboss=False).index=index
+
+        row.separator()
+        row.operator(op_export_sets.Paladin_OT_ExportSetRemove.bl_idname, icon='TRASH', text="", emboss=False).index=index
 
         col = layout.column(align=True)
         col.use_property_split = True
 
         if export_set.has_path:
             row = col.row(align=True)
-            row.prop(export_set, "path", text="Path")      
+            row.prop(export_set, "path", text="Path")
+            op = row.operator("paladin.browse_path", text="", icon='FILE_FOLDER', emboss=False)
+            op.set_index = index
+            op.item_index = -1
         if export_set.has_affixes:
             row = col.row(align=True)
             row.prop(export_set, "prefix", text="Affixes")
@@ -106,6 +115,9 @@ class VIEW3D_PT_Paladin_Exporter(bpy.types.Panel):
             op = col.operator(op_export_sets.Paladin_OT_ExportSetItemMove.bl_idname, text="", icon="TRIA_DOWN", emboss=False)
             op.direction = "DOWN"
             op.set_index = index
+
+        if any(not is_collection_valid(item.uuid) for item in items):
+            col.operator(op_export_sets.Paladin_OT_ExportSetCleanupMissing.bl_idname, text="", icon='ORPHAN_DATA', emboss=False).set_index = index
                 
 classes = (VIEW3D_PT_Paladin_Exporter,)
 

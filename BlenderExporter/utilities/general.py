@@ -40,7 +40,16 @@ def get_event_modifiers(event):
     return ctrl, alt, shift
 
 def get_export_path(export_set, export_item, filename):
-    return os.path.join(os.path.dirname(export_item.path) or os.path.dirname(export_set.path) or os.path.dirname(bpy.data.filepath), filename)
+    blend_dir = os.path.dirname(bpy.data.filepath)
+    item_raw = export_item.path
+    set_raw = export_set.path
+    if item_raw and item_raw != '//':
+        base_dir = bpy.path.abspath(item_raw)
+    elif set_raw and set_raw != '//':
+        base_dir = bpy.path.abspath(set_raw)
+    else:
+        base_dir = blend_dir
+    return os.path.join(base_dir, filename)
 
 def exportable(obj):
     return obj.parent == None and obj.type in export_object_types and obj.visible_get()
@@ -50,6 +59,15 @@ def exportable_selected(obj):
 
 def exportable_selected_nested(obj):
     return obj.parent and obj.type in export_object_types and obj.select_get() and obj.parent.visible_get()
+
+def exportable_all(obj):
+    return obj.parent == None and obj.type in export_object_types
+
+def exportable_selected_all(obj):
+    return obj.parent == None and obj.type in export_object_types and obj.select_get()
+
+def exportable_selected_nested_all(obj):
+    return obj.parent and obj.type in export_object_types and obj.select_get()
     
 def generate_random_uuid():
     uuid_bits = [random.randint(0, 255) for _ in range(16)]
